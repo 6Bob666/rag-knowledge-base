@@ -29,10 +29,12 @@ jobs:
         run: >-
           python -m py_compile main.py config.py schemas.py
           routers/chat.py routers/health.py routers/metrics.py
-          services/*.py
+          services/*.py mcp_server/*.py
 
       - name: Run tests without external LLM
-        run: python -m pytest -q tests --junitxml=test-results/pytest.xml
+        run: |
+          mkdir -p test-results
+          python -m pytest -q tests --junitxml=test-results/pytest.xml
 
       - name: Upload test report
         if: always()

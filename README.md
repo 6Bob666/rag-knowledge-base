@@ -3,7 +3,7 @@
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-async-009688)
 ![Chroma](https://img.shields.io/badge/Vector_DB-ChromaDB-4B32C3)
-![Tests](https://img.shields.io/badge/tests-137_passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-152_passed-brightgreen)
 
 一个基于 FastAPI 的中文知识库问答系统，支持文档上传、自动切分、向量化入库、混合检索、重排序、LLM 生成回答，并配套完整的离线评测体系。
 
@@ -12,6 +12,7 @@
 - 检索链路：BGE Embedding + BM25 混合召回、RRF 融合、BGE Reranker 精排与低分拒答。
 - 对话能力：多轮会话、查询改写、SSE 流式输出、规则/LLM Router。
 - Agent 能力：标准 Function Calling Tool Agent、工具白名单、参数校验、并行调用与有限步数控制。
+- 协议与记忆：MCP Server/Client 标准化工具调用；跨会话长期记忆的抽取、召回和 Prompt 注入。
 - 工程能力：SQLite/Chroma 双写补偿、Redis 会话、健康检查、Docker、超时重试、限流、熔断、监控指标与 CI。
 - 效果评测：人工标注评测集，计算 Recall@K、Precision@K、MRR 与负样本拒答率。
 
@@ -121,9 +122,16 @@ services/llm_service.py     LLM 调用与查询改写
 services/agent_state.py     Agent 状态与结构化路由决策
 services/agent_router.py    rules / LLM 两种 Router
 services/tool_agent.py      标准 Function Calling Tool Agent
+services/mcp_client.py      MCP stdio 客户端
+services/mcp_tools.py       MCP 工具 → Function Calling 工具适配
+services/memory_store.py    长期记忆存储（内存/Redis）
+services/memory_extractor.py 规则版记忆抽取
+services/memory_service.py  记忆召回与 Prompt 格式化
 services/dependencies.py    共享单例
 services/text_splitter.py   文本切分
 services/metrics.py         检索评测指标
+
+mcp_server/kb_server.py     最小 MCP Server（JSON-RPC + stdio）
 
 evaluate_retrieval.py       检索层离线评测
 evaluate_agent_router.py    Agent Router（rules vs LLM）对照实验
@@ -214,6 +222,78 @@ POST /chat/agent/tool
 
 相关测试：`tests/test_tool_agent.py`（循环与边界）、
 `tests/test_tool_agent_api.py`（接口层）。
+
+## MCP Server
+
+项目把知识库检索暴露为标准 MCP 工具，协议层使用 JSON-RPC 2.0 + stdio，
+不依赖官方 SDK 也能直接运行：
+
+```powershell
+python -m mcp_server.kb_server
+```
+
+支持 `initialize`、`ping`、`tools/list`、`tools/call`，内置工具：
+
+```text
+search_knowledge_base       检索知识库片段
+list_knowledge_documents    列出已入库文档
+```
+
+客户端调用示例：
+
+```python
+from services.mcp_client import StdioMCPClient
+
+with StdioMCPClient() as client:
+    client.initialize()
+    tools = client.list_tools()
+    contexts = client.call_tool(
+        "search_knowledge_base",
+        {"query": "CNN 的全称是什么", "top_k": 3},
+    )
+```
+
+Function Calling 解决“模型怎么请求工具”，MCP 解决“工具怎么被标准化复用”。
+
+### MCP 接入 Tool Agent
+
+`MCP_ENABLED=true` 时，`/chat/agent/tool` 的工具声明和执行都走 MCP Server：
+
+```text
+MCP tools/list ──转换──▶ Function Calling tools ──▶ LLM 返回 tool_calls
+                                                          │
+                                    MCP tools/call ◀──────┘
+```
+
+转换只改字段名，不改 schema 内容：
+
+```text
+MCP                    Function Calling
+name            →      function.name
+description     →      function.description
+inputSchema     →      function.parameters
+```
+
+这样工具只需在 MCP Server 里声明一次，Agent 不必手写工具定义，工具白名单
+也直接取自 `tools/list`，声明和权限不会跑偏。默认 `MCP_ENABLED=false`，保持
+单进程开发；开启后 MCP Server 以子进程懒加载，工具列表缓存一次，应用关闭
+时随 lifespan 一起释放。MCP Server 启动失败或返回空工具列表时，接口自动
+回退到内置本地检索工具。
+
+## 长期记忆
+
+`/chat/ask` 支持可选的 `user_id`。系统会在检索前召回该用户的长期记忆并注入
+Prompt，在生成成功后从用户问题中抽取新的记忆：
+
+```text
+用户问题
+  → 记忆召回
+  → 检索 + Reranker
+  → 生成（注入 user_memory）
+  → 记忆抽取与写回
+```
+
+记忆存储支持内存和 Redis 两种后端；生产环境建议使用 Redis 以支持多实例共享。
 
 ## 技术难点与解决方案
 

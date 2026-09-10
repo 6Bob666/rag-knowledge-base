@@ -31,6 +31,9 @@ async def lifespan(app: FastAPI):
     logger.info("模型加载完成，应用已就绪")
     yield
     logger.info("RAG 应用正在关闭")
+    from services.dependencies import shutdown_mcp_client
+
+    shutdown_mcp_client()
 
 
 app = FastAPI(title="RAG Knowledge Base", lifespan=lifespan)

@@ -23,7 +23,12 @@ from services.tool_agent import (
 from schemas import AnswerResponse, QuestionRequest
 from config import settings
 from logging_config import logger
-from services.dependencies import get_conversation_store, get_store
+from services.dependencies import (
+    get_conversation_store,
+    get_mcp_tool_provider,
+    get_memory_service,
+    get_store,
+)
 from services.failure_journal import record_failure
 from services.output_guard import UnsafeOutputError, validate_answer
 from services.cache import TTLCache
@@ -234,10 +239,18 @@ def _call_llm(
     question: str,
     context: str,
     history: list[dict[str, str]],
+    memory: str = "",
 ):
     """调用生成函数，兼容旧版只接收 question、context 的测试替身。"""
     try:
         parameters = list(inspect.signature(llm).parameters.values())
+        accepts_kwargs = any(
+            parameter.kind == inspect.Parameter.VAR_KEYWORD
+            for parameter in parameters
+        )
+        accepts_memory = accepts_kwargs or any(
+            parameter.name == "memory" for parameter in parameters
+        )
         accepts_history = any(
             parameter.kind == inspect.Parameter.VAR_POSITIONAL
             or parameter.name == "history"
@@ -254,13 +267,21 @@ def _call_llm(
             ]
         ) >= 3
     except (TypeError, ValueError):
+        accepts_memory = False
         accepts_history = True
 
-    return (
-        llm(question, context, history)
-        if accepts_history
-        else llm(question, context)
-    )
+    # 测试替身没有 memory 参数时，把记忆并入上下文，保持兼容。
+    effective_context = context
+    if memory and not accepts_memory:
+        effective_context = f"{memory}\n\n{context}" if context else memory
+
+    if accepts_memory and accepts_history:
+        return llm(question, effective_context, history, memory=memory)
+    if accepts_memory:
+        return llm(question, effective_context, memory=memory)
+    if accepts_history:
+        return llm(question, effective_context, history)
+    return llm(question, effective_context)
 
 
 def get_llm() -> Callable[[str, str], str]:
@@ -285,6 +306,44 @@ def to_context_response(record: dict) -> dict:
         "source": str(metadata.get("source", "unknown")),
         "chunk_id": str(metadata.get("chunk_id", record.get("id", "unknown"))),
     }
+
+
+def _mcp_tool_definitions(provider) -> list[dict] | None:
+    """取 MCP 工具声明；未启用、拿不到或结果为空时返回 None。"""
+    if provider is None:
+        return None
+    try:
+        definitions = provider.function_calling_tools()
+    except Exception as exc:
+        logger.warning("MCP 工具列表获取失败，回退内置检索工具: %s", exc)
+        return None
+    return definitions or None
+
+
+def _collect_mcp_contexts(raw: str, bucket: list[dict]) -> None:
+    """MCP 工具返回 JSON 文本，解析后回填成接口响应里的 contexts。
+
+    只有形如检索结果的列表才会被采纳，例如 list_knowledge_documents
+    这类其它工具的输出会被忽略。
+    """
+    try:
+        payload = json.loads(raw)
+    except (TypeError, json.JSONDecodeError):
+        return
+    if not isinstance(payload, list):
+        return
+    for item in payload:
+        if not isinstance(item, dict) or "text" not in item:
+            continue
+        bucket.append(
+            {
+                "text": item["text"],
+                "metadata": {
+                    "source": item.get("source", "unknown"),
+                    "chunk_id": item.get("chunk_id", "unknown"),
+                },
+            }
+        )
 
 
 def sse_event(event: str, data: dict) -> str:
@@ -356,6 +415,7 @@ class _AgentPrepResult:
     contexts: list[dict]
     terminal_message: str | None = None
     terminal_status: str | None = None
+    memory_text: str = ""
 
 
 async def _prepare_agent_request(
@@ -366,6 +426,7 @@ async def _prepare_agent_request(
     query_rewriter: Callable[[str], str],
     agent_router: Callable,
     conversation_store,
+    memory_service=None,
     log_prefix: str = "rag_answer",
 ) -> _AgentPrepResult:
     """执行 ROUTE -> RETRIEVE -> CHECK，普通接口和流式接口共用。
@@ -378,6 +439,22 @@ async def _prepare_agent_request(
     total_start = time.perf_counter()
     original_question = request.question.strip()
     history = conversation_store.get_history(request.conversation_id)
+
+    memory_text = ""
+    if memory_service is not None and request.user_id:
+        memory_start = time.perf_counter()
+        try:
+            memories = await run_in_threadpool(
+                memory_service.recall,
+                request.user_id,
+                original_question,
+            )
+            memory_text = memory_service.format_for_prompt(memories)
+        except Exception as exc:
+            logger.warning("长期记忆召回失败，跳过: %s", exc)
+        timings["memory_recall_ms"] = round(
+            (time.perf_counter() - memory_start) * 1000, 1
+        )
 
     state = AgentState(
         request_id=request_id,
@@ -407,6 +484,7 @@ async def _prepare_agent_request(
             contexts=state.contexts,
             terminal_message=terminal_message,
             terminal_status=terminal_status,
+            memory_text=memory_text,
         )
 
     # ---------- ROUTE ----------
@@ -597,6 +675,7 @@ async def _generate_answer(
     question: str,
     context_text: str,
     history: list[dict[str, str]],
+    memory_text: str = "",
     request_id: str,
     conversation_id: str | None,
     timings: dict,
@@ -607,7 +686,7 @@ async def _generate_answer(
     """调用 LLM 生成答案，并统一做输出安全检查。"""
     llm_start = time.perf_counter()
     def call_once():
-        return _call_llm(llm, question, context_text, history)
+        return _call_llm(llm, question, context_text, history, memory_text)
 
     try:
         answer = await asyncio.wait_for(
@@ -675,6 +754,7 @@ async def _run_agent_answer(
     llm: Callable[[str, str], str],
     agent_router: Callable,
     conversation_store,
+    memory_service=None,
 ) -> dict:
     """轻量 Agentic RAG：ROUTE/RETRIEVE/CHECK + 非流式生成。"""
     prep = await _prepare_agent_request(
@@ -684,6 +764,7 @@ async def _run_agent_answer(
         query_rewriter=query_rewriter,
         agent_router=agent_router,
         conversation_store=conversation_store,
+        memory_service=memory_service,
     )
     if prep.terminal_message is not None:
         return {"answer": prep.terminal_message, "contexts": []}
@@ -695,6 +776,7 @@ async def _run_agent_answer(
         question=prep.original_question,
         context_text="\n".join(item["text"] for item in prep.contexts),
         history=prep.history,
+        memory_text=prep.memory_text,
         request_id=prep.request_id,
         conversation_id=prep.conversation_id,
         timings=prep.timings,
@@ -711,6 +793,15 @@ async def _run_agent_answer(
         prep.original_question,
         state.answer,
     )
+    if memory_service is not None and request.user_id:
+        try:
+            await run_in_threadpool(
+                memory_service.remember_turn,
+                request.user_id,
+                prep.original_question,
+            )
+        except Exception as exc:
+            logger.warning("长期记忆写入失败: %s", exc)
     logger.info(
         "rag_answer %s",
         build_rag_trace(
@@ -743,6 +834,7 @@ async def ask_question(
         get_agent_router
     ),
     conversation_store=Depends(get_conversation_store),
+    memory_service=Depends(get_memory_service),
 ):
     _check_rate_limit(http_request)
     return await _run_agent_answer(
@@ -753,6 +845,7 @@ async def ask_question(
         llm=llm,
         agent_router=agent_router,
         conversation_store=conversation_store,
+        memory_service=memory_service,
     )
 
 
@@ -768,6 +861,7 @@ async def ask_question_stream(
         get_agent_router
     ),
     conversation_store=Depends(get_conversation_store),
+    memory_service=Depends(get_memory_service),
 ):
     _check_rate_limit(http_request)
     prep = await _prepare_agent_request(
@@ -777,6 +871,7 @@ async def ask_question_stream(
         query_rewriter=query_rewriter,
         agent_router=agent_router,
         conversation_store=conversation_store,
+        memory_service=memory_service,
         log_prefix="rag_stream",
     )
     request_id = prep.request_id
@@ -823,6 +918,7 @@ async def ask_question_stream(
                 prep.original_question,
                 context_text,
                 prep.history,
+                prep.memory_text,
             )
             generated_parts = list(stream)
             answer = validate_answer("".join(generated_parts))
@@ -843,6 +939,14 @@ async def ask_question_stream(
                 prep.original_question,
                 answer,
             )
+            if memory_service is not None and request.user_id:
+                try:
+                    memory_service.remember_turn(
+                        request.user_id,
+                        prep.original_question,
+                    )
+                except Exception as exc:
+                    logger.warning("长期记忆写入失败: %s", exc)
             logger.info(
                 "rag_stream %s",
                 build_rag_trace(
@@ -957,6 +1061,7 @@ async def ask_tool_agent(
         get_tool_agent_responder
     ),
     conversation_store=Depends(get_conversation_store),
+    mcp_tool_provider=Depends(get_mcp_tool_provider),
 ):
     """标准 Function Calling Agent：LLM 自主决定是否调用检索工具。"""
     _check_rate_limit(http_request)
@@ -967,7 +1072,11 @@ async def ask_tool_agent(
     history = conversation_store.get_history(request.conversation_id)
     context_bucket: list[dict] = []
 
-    def execute_tool(name: str, arguments: dict) -> str:
+    # 工具声明优先来自 MCP Server；拿不到工具就退回内置本地工具，
+    # 保证 MCP 子进程启动失败不会直接让接口不可用。
+    tool_definitions = _mcp_tool_definitions(mcp_tool_provider)
+
+    def local_execute_tool(name: str, arguments: dict) -> str:
         if name != KNOWLEDGE_SEARCH_TOOL_NAME:
             return json.dumps(
                 {"error": f"工具 {name} 不在白名单内"},
@@ -1003,6 +1112,21 @@ async def ask_tool_agent(
             ensure_ascii=False,
         )
 
+    def execute_tool(name: str, arguments: dict) -> str:
+        """工具执行入口：MCP 模式下转发到 MCP Server，否则本地执行。"""
+        if not tool_definitions:
+            return local_execute_tool(name, arguments)
+        try:
+            raw = mcp_tool_provider.call_tool(name, arguments)
+        except Exception as exc:
+            logger.warning("MCP 工具调用失败: %s", exc)
+            return json.dumps(
+                {"error": f"工具 {name} 执行失败: {exc}"},
+                ensure_ascii=False,
+            )
+        _collect_mcp_contexts(raw, context_bucket)
+        return raw
+
     try:
         result = await asyncio.wait_for(
             run_in_threadpool(
@@ -1011,6 +1135,7 @@ async def ask_tool_agent(
                 history=history,
                 execute_tool=execute_tool,
                 respond=tool_responder,
+                tool_definitions=tool_definitions,
                 max_steps=3,
             ),
             timeout=settings.tool_agent_timeout_seconds,

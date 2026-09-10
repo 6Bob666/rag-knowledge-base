@@ -17,6 +17,12 @@ class QuestionRequest(BaseModel):
         max_length=100,
         description="可选的会话标识；不传时按单轮问题处理",
     )
+    user_id: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=100,
+        description="可选的用户标识；用于跨会话长期记忆",
+    )
     question: str = Field(..., min_length=1, description="用户问题")
     top_k: int = Field(3, ge=1, le=10, description="返回的上下文数量")
     enable_retry: bool = Field(

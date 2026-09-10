@@ -45,6 +45,21 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     conversation_ttl_seconds: int = 86400
 
+    # 长期记忆：默认开启内存版，生产可切到 Redis。
+    memory_enabled: bool = True
+    memory_store_backend: str = "memory"
+    memory_ttl_seconds: int = 2592000
+    memory_max_items: int = 200
+    memory_recall_top_k: int = 3
+
+    # MCP：开启后 /chat/agent/tool 的工具声明与执行都走 MCP Server 子进程，
+    # 而不是在应用进程内直接调用 VectorStore。默认关闭，保持单进程开发简单。
+    mcp_enabled: bool = False
+    # 自定义启动命令（按空白切分，路径不要带空格）；留空则用
+    # "<当前解释器> -m mcp_server.kb_server"。
+    mcp_server_command: str = ""
+    mcp_request_timeout_seconds: float = 30.0
+
     # 稳定性保护；限流默认关闭，避免单机开发和测试受全局状态影响。
     rate_limit_enabled: bool = False
     rate_limit_requests: int = 60
