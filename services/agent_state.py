@@ -74,9 +74,25 @@ class AgentState:
     failure_status: str | None = None
     error: str | None = None
 
+    # Planner / Verifier 轨迹：每轮"验证结论 + 下一步动作"各记一条，
+    # 这样一次请求为什么重试、为什么拒答都能事后复盘。
+    route_steps: list[str] = field(default_factory=list)
+    verifications: list[dict] = field(default_factory=list)
+    plan_steps: list[dict] = field(default_factory=list)
+    degraded: bool = False
+
     def can_retry(self) -> bool:
         """是否还有剩余的检索次数。"""
         return self.attempt < self.max_attempts
+
+    def record_route_step(self, step: str) -> None:
+        """记录状态机经过的节点，便于把执行路径打进日志。"""
+        self.route_steps.append(step)
+        self.decision = step
+
+    @property
+    def last_verdict(self) -> str:
+        return self.verifications[-1]["verdict"] if self.verifications else ""
 
     def snapshot(self) -> dict:
         """输出状态摘要，供日志和测试使用，不包含完整文档文本。"""
@@ -92,5 +108,8 @@ class AgentState:
             "candidate_count": len(self.candidates),
             "context_count": len(self.contexts),
             "decision": self.decision,
+            "route_steps": list(self.route_steps),
+            "last_verdict": self.last_verdict,
+            "degraded": self.degraded,
             "failure_status": self.failure_status,
         }

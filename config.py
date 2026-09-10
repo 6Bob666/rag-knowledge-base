@@ -60,6 +60,11 @@ class Settings(BaseSettings):
     mcp_server_command: str = ""
     mcp_request_timeout_seconds: float = 30.0
 
+    # Planner / Verifier：开启后检索循环按"验证结论"选补救策略；
+    # 关闭后退回旧行为（只在空结果时重试），出问题可一键切换。
+    planner_enabled: bool = True
+    verifier_min_coverage: float = 0.5
+
     # 稳定性保护；限流默认关闭，避免单机开发和测试受全局状态影响。
     rate_limit_enabled: bool = False
     rate_limit_requests: int = 60

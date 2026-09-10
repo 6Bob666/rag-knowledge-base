@@ -1,0 +1,880 @@
+{
+  "summary": {
+    "rules_coverage": {
+      "verifier": "rules_coverage",
+      "positive_count": 20,
+      "negative_count": 4,
+      "true_pass": 20,
+      "false_pass": 0,
+      "false_block": 0,
+      "true_block": 0,
+      "agreement_with_labels": 1.0,
+      "false_pass_rate": 0.0,
+      "false_block_rate": 0.0,
+      "negative_pass": 0,
+      "replan_trigger_rate": 0.1667,
+      "avg_coverage": 0.9144
+    },
+    "no_coverage_check": {
+      "verifier": "no_coverage_check",
+      "positive_count": 20,
+      "negative_count": 4,
+      "true_pass": 20,
+      "false_pass": 0,
+      "false_block": 0,
+      "true_block": 0,
+      "agreement_with_labels": 1.0,
+      "false_pass_rate": 0.0,
+      "false_block_rate": 0.0,
+      "negative_pass": 0,
+      "replan_trigger_rate": 0.1667,
+      "avg_coverage": null
+    }
+  },
+  "metadata": {
+    "dataset": "D:\\software\\Pycharm\\Project\\test1\\fastApiProject\\evaluation_dataset.json",
+    "top_k": 3,
+    "candidate_k": 9,
+    "reranker_score_threshold": 0.5,
+    "verifier_min_coverage": 0.5,
+    "knowledge_base_version": "local-v1",
+    "chunk_size": 500,
+    "chunk_overlap": 50,
+    "created_at": "2026-09-10T13:50:31.157457+00:00"
+  },
+  "details": [
+    {
+      "question": "CNN 的核心结构有哪些？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "-2427343140941439082",
+        "-5518122704045881241",
+        "1155924692512672070"
+      ],
+      "relevant_chunk_ids": [
+        "-419018054292771344",
+        "-5518122704045881241",
+        "1155924692512672070",
+        "6637959853819315390"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "CNN 的全称是什么？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "-521577992233334688",
+        "-5572441067015943721",
+        "8106130154189106110"
+      ],
+      "relevant_chunk_ids": [
+        "-521577992233334688",
+        "-5572441067015943721",
+        "-8690463781539406055",
+        "56673496523236486",
+        "8106130154189106110"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "ResNet 解决了什么问题？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 1,
+      "returned_chunk_ids": [
+        "-1446484906085642270"
+      ],
+      "relevant_chunk_ids": [
+        "-1446484906085642270"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 1,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 1,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "CNN 有哪些应用领域？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "-1038206344583972107",
+        "-2196137171851464893",
+        "-3023142809904146608"
+      ],
+      "relevant_chunk_ids": [
+        "-1038206344583972107",
+        "-3023142809904146608",
+        "-8248542632231644611"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 0.75",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 0.75,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "Transformer 是哪一年提出的？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "-5208822457362137846",
+        "-6867316513934236315",
+        "-8333297702724469122"
+      ],
+      "relevant_chunk_ids": [
+        "-5208822457362137846",
+        "-6867316513934236315",
+        "-8333297702724469122"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "深度学习是什么？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 1,
+      "returned_chunk_ids": [
+        "281229924000963678"
+      ],
+      "relevant_chunk_ids": [
+        "281229924000963678"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 1,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 1,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "自然语言处理包括哪些任务？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 1,
+      "returned_chunk_ids": [
+        "-1075266231749530337"
+      ],
+      "relevant_chunk_ids": [
+        "-1075266231749530337"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 0.75",
+          "candidate_count": 9,
+          "context_count": 1,
+          "coverage": 0.75,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 1,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "池化层的作用是什么？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "2359563620344747748",
+        "3426670488139986560",
+        "6637959853819315390"
+      ],
+      "relevant_chunk_ids": [
+        "2359563620344747748",
+        "3426670488139986560",
+        "6126253287347848113",
+        "6637959853819315390"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "卷积层的作用是什么？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "-5518122704045881241",
+        "-7931891359671978749",
+        "6543792310319246442"
+      ],
+      "relevant_chunk_ids": [
+        "-5518122704045881241",
+        "-7931891359671978749",
+        "6543792310319246442"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "全连接层的作用是什么？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "-4095098712333165222",
+        "-419018054292771344",
+        "5530933194606997375"
+      ],
+      "relevant_chunk_ids": [
+        "-4095098712333165222",
+        "-419018054292771344",
+        "-6427053944205683501",
+        "4624186998031972605",
+        "5530933194606997375",
+        "7256558339941602169"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "RNN 主要用于处理什么数据？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "574963061111272851",
+        "5772014950124227594",
+        "749000663186001851"
+      ],
+      "relevant_chunk_ids": [
+        "574963061111272851",
+        "5772014950124227594",
+        "749000663186001851"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "BERT 是什么？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "-7662626398335416398",
+        "1194022290468591980",
+        "8542982397149879946"
+      ],
+      "relevant_chunk_ids": [
+        "-7662626398335416398",
+        "1194022290468591980",
+        "8542982397149879946"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "问题术语过少，跳过覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "GPT 系列模型由谁开发？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "-4056551846608179727",
+        "-7887707981037143014",
+        "308902400300357856"
+      ],
+      "relevant_chunk_ids": [
+        "-4056551846608179727",
+        "-7887707981037143014",
+        "308902400300357856"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 0.75",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 0.75,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "CNN 的训练通常需要什么？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 1,
+      "returned_chunk_ids": [
+        "-8915026293567996486"
+      ],
+      "relevant_chunk_ids": [
+        "-8915026293567996486"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 1,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 1,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "池化层常用的有哪两种？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "3065409946327893778",
+        "3426670488139986560",
+        "6637959853819315390"
+      ],
+      "relevant_chunk_ids": [
+        "-5121724826851424160",
+        "3426670488139986560",
+        "6637959853819315390"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 0.60",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 0.6,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "卷积核是什么？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 3,
+      "returned_chunk_ids": [
+        "-5101725002081191738",
+        "-5572441067015943721",
+        "-7931891359671978749"
+      ],
+      "relevant_chunk_ids": [
+        "-5101725002081191738"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 3,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "全连接层占神经网络多少参数？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 2,
+      "returned_chunk_ids": [
+        "44329683506525223",
+        "5530933194606997375"
+      ],
+      "relevant_chunk_ids": [
+        "44329683506525223"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 0.67",
+          "candidate_count": 9,
+          "context_count": 2,
+          "coverage": 0.6666666666666666,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 2,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "Vision Transformer 是什么？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 1,
+      "returned_chunk_ids": [
+        "3012379862023207607"
+      ],
+      "relevant_chunk_ids": [
+        "-3986198026661012435",
+        "3012379862023207607"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 1,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 1,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "池化层引入了什么不变性？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 2,
+      "returned_chunk_ids": [
+        "2359563620344747748",
+        "6126253287347848113"
+      ],
+      "relevant_chunk_ids": [
+        "2359563620344747748"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 0.86",
+          "candidate_count": 9,
+          "context_count": 2,
+          "coverage": 0.8571428571428571,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 2,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "神经网络由什么组成？",
+      "is_negative": false,
+      "hit": true,
+      "candidate_count": 9,
+      "context_count": 2,
+      "returned_chunk_ids": [
+        "-5526481663710361146",
+        "3607952443320892979"
+      ],
+      "relevant_chunk_ids": [
+        "3607952443320892979"
+      ],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "关键术语覆盖率 1.00",
+          "candidate_count": 9,
+          "context_count": 2,
+          "coverage": 1.0,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "sufficient",
+          "sufficient": true,
+          "reason": "未启用覆盖度检查",
+          "candidate_count": 9,
+          "context_count": 2,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "LoRA 是什么？",
+      "is_negative": true,
+      "hit": false,
+      "candidate_count": 9,
+      "context_count": 0,
+      "returned_chunk_ids": [],
+      "relevant_chunk_ids": [],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "low_score",
+          "sufficient": false,
+          "reason": "候选文档都没有达到相关性阈值",
+          "candidate_count": 9,
+          "context_count": 0,
+          "coverage": null,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "low_score",
+          "sufficient": false,
+          "reason": "候选文档都没有达到相关性阈值",
+          "candidate_count": 9,
+          "context_count": 0,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "ChatGPT 是哪一年发布的？",
+      "is_negative": true,
+      "hit": false,
+      "candidate_count": 9,
+      "context_count": 0,
+      "returned_chunk_ids": [],
+      "relevant_chunk_ids": [],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "low_score",
+          "sufficient": false,
+          "reason": "候选文档都没有达到相关性阈值",
+          "candidate_count": 9,
+          "context_count": 0,
+          "coverage": null,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "low_score",
+          "sufficient": false,
+          "reason": "候选文档都没有达到相关性阈值",
+          "candidate_count": 9,
+          "context_count": 0,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "支持向量机（SVM）是什么？",
+      "is_negative": true,
+      "hit": false,
+      "candidate_count": 9,
+      "context_count": 0,
+      "returned_chunk_ids": [],
+      "relevant_chunk_ids": [],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "low_score",
+          "sufficient": false,
+          "reason": "候选文档都没有达到相关性阈值",
+          "candidate_count": 9,
+          "context_count": 0,
+          "coverage": null,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "low_score",
+          "sufficient": false,
+          "reason": "候选文档都没有达到相关性阈值",
+          "candidate_count": 9,
+          "context_count": 0,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    },
+    {
+      "question": "Transformer-XL 是什么？",
+      "is_negative": true,
+      "hit": false,
+      "candidate_count": 9,
+      "context_count": 0,
+      "returned_chunk_ids": [],
+      "relevant_chunk_ids": [],
+      "verdicts": {
+        "rules_coverage": {
+          "verdict": "low_score",
+          "sufficient": false,
+          "reason": "候选文档都没有达到相关性阈值",
+          "candidate_count": 9,
+          "context_count": 0,
+          "coverage": null,
+          "missing_terms": []
+        },
+        "no_coverage_check": {
+          "verdict": "low_score",
+          "sufficient": false,
+          "reason": "候选文档都没有达到相关性阈值",
+          "candidate_count": 9,
+          "context_count": 0,
+          "coverage": null,
+          "missing_terms": []
+        }
+      }
+    }
+  ]
+}

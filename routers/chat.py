@@ -15,6 +15,18 @@ from services.reranker import ReRanker
 from services.llm_service import ask_llm, ask_llm_stream, rewrite_query
 from services.agent_router import route_question, route_question_with_llm
 from services.agent_state import AgentState, RouteDecision
+from services.plan_verify import (
+    ACTION_GENERATE,
+    ACTION_RETRIEVE,
+    VERDICT_EMPTY,
+    AlwaysSufficientVerifier,
+    PlanStep,
+    PlanTrace,
+    QueryStrategies,
+    RetrievalPlanner,
+    RuleBasedVerifier,
+    build_keyword_query,
+)
 from services.tool_agent import (
     KNOWLEDGE_SEARCH_TOOL_NAME,
     call_llm_tool,
@@ -107,13 +119,31 @@ def build_rag_trace(
 
 def _agent_trace_fields(state: AgentState) -> dict:
     """把 Agent 状态摘要放入日志，供后续按 route_action 等维度统计。"""
-    return {
+    fields = {
         "route_action": state.route_action,
         "decision": state.decision,
         "attempt": state.attempt,
         "max_attempts": state.max_attempts,
         "search_count": len(state.search_queries),
     }
+    if state.verifications:
+        fields["verify_verdict"] = state.verifications[-1]["verdict"]
+        fields["verify_coverage"] = state.verifications[-1]["coverage"]
+        # 整条链路的验证结论，例如 low_coverage>sufficient：
+        # 只留最后一次结论看不出"为什么重试过"。
+        if len(state.verifications) > 1:
+            fields["verify_trail"] = ">".join(
+                item["verdict"] for item in state.verifications
+            )
+    if state.plan_steps:
+        fields["plan_action"] = state.plan_steps[-1]["action"]
+        if len(state.plan_steps) > 1:
+            fields["plan_trail"] = ">".join(
+                item["action"] for item in state.plan_steps
+            )
+    if state.degraded:
+        fields["degraded"] = True
+    return fields
 
 
 def _journal_failure(
@@ -147,6 +177,18 @@ def get_reranker() -> ReRanker:
             if reranker is None:
                 reranker = ReRanker()
     return reranker
+
+
+def get_verifier():
+    """提供检索结果验证器；planner_enabled=False 时退回旧行为。"""
+    if settings.planner_enabled:
+        return RuleBasedVerifier(min_coverage=settings.verifier_min_coverage)
+    return AlwaysSufficientVerifier()
+
+
+def get_planner() -> RetrievalPlanner:
+    """提供检索重规划器，测试时可以替换为假的实现。"""
+    return RetrievalPlanner()
 
 
 def get_query_rewriter() -> Callable[[str], str]:
@@ -427,9 +469,11 @@ async def _prepare_agent_request(
     agent_router: Callable,
     conversation_store,
     memory_service=None,
+    verifier=None,
+    planner=None,
     log_prefix: str = "rag_answer",
 ) -> _AgentPrepResult:
-    """执行 ROUTE -> RETRIEVE -> CHECK，普通接口和流式接口共用。
+    """执行 ROUTE → RETRIEVE → VERIFY → REPLAN 状态机，接口层共用。
 
     terminal_message 非空时表示请求已在生成前终止（refuse /
     no_documents / no_context），调用方直接返回该提示即可。
@@ -553,8 +597,7 @@ async def _prepare_agent_request(
         state.decision = "direct_answer"
         return build_result(route_action="direct_answer")
 
-    # ---------- RETRIEVE：查询改写 + 有界检索循环 ----------
-    state.decision = "retrieve"
+    # ---------- RETRIEVE → VERIFY → REPLAN：有界规划循环 ----------
     router_query = (decision.query or "").strip()
     rewrite_start = time.perf_counter()
     if router_query:
@@ -576,20 +619,34 @@ async def _prepare_agent_request(
         (time.perf_counter() - rewrite_start) * 1000, 1
     )
 
-    queries_to_try = [optimized_question]
-    # 第二次检索换用原始问法，而不是重复搜同一个问题。
-    if request.enable_retry and optimized_question != original_question:
-        queries_to_try.append(original_question)
-    state.max_attempts = len(queries_to_try)
+    # 补救策略池：原问题和关键词查询是两种不同口味，Planner 按失败类型挑。
+    strategies = QueryStrategies(
+        original=original_question,
+        keyword=build_keyword_query(original_question),
+    )
+    # 检索次数只由这里决定：默认最多两次（首检 + 一次重规划）。
+    state.max_attempts = 2 if request.enable_retry else 1
+    if verifier is None:
+        verifier = get_verifier()
+    if planner is None:
+        planner = get_planner()
+    plan_trace = PlanTrace()
 
-    for index, query in enumerate(queries_to_try):
-        state.attempt = index + 1
+    step = PlanStep(
+        ACTION_RETRIEVE,
+        query=optimized_question,
+        reason="initial_query",
+    )
+    while step.action == ACTION_RETRIEVE and step.query:
+        state.record_route_step("retrieve")
+        query = step.query
+        state.attempt += 1
         state.current_query = query
         state.search_queries.append(query)
 
         # 第一次检索耗时写入通用字段，方便现有日志分析器解析；
         # 第二次检索单独记录 attempt2 字段。
-        attempt_timings = timings if index == 0 else {}
+        attempt_timings = timings if state.attempt == 1 else {}
         attempt_start = time.perf_counter()
         candidates, contexts = await _search_once(
             store,
@@ -598,11 +655,11 @@ async def _prepare_agent_request(
             request.top_k,
             attempt_timings,
         )
-        if index == 0:
+        if state.attempt == 1:
             state.candidates = list(candidates)
             state.contexts = list(contexts)
         else:
-            # 第二轮结果优先覆盖第一轮，避免无关文档叠加污染生成层。
+            # 重规划结果优先覆盖上一轮，避免无关文档叠加污染生成层。
             if candidates:
                 state.candidates = list(candidates)
             if contexts:
@@ -614,21 +671,41 @@ async def _prepare_agent_request(
             timings["retry_ms"] = round(
                 (time.perf_counter() - attempt_start) * 1000, 1
             )
-        if contexts:
-            break
+
+        # ---------- VERIFY ----------
+        state.record_route_step("verify")
+        verification = await run_in_threadpool(
+            verifier.verify,
+            question=original_question,
+            candidates=state.candidates,
+            contexts=state.contexts,
+        )
+
+        # ---------- PLAN ----------
+        step = planner.plan(
+            state=state,
+            verification=verification,
+            strategies=strategies,
+        )
+        # 双保险：Planner 就算被换成有 bug 的实现，也不能突破次数上限。
+        if step.action == ACTION_RETRIEVE and not state.can_retry():
+            step = PlanStep(ACTION_GENERATE, reason="attempt_limit_reached")
+        state.verifications.append(verification.to_dict())
+        state.plan_steps.append(step.to_dict())
+        plan_trace.record(verification, step)
 
     candidates, contexts = state.candidates, state.contexts
+    state.degraded = plan_trace.degraded
+    state.record_route_step(step.action)
 
-    # ---------- CHECK ----------
-    if not contexts:
-        if not candidates:
-            state.decision = "refuse"
+    # ---------- 验证不通过且没有补救机会 → 拒答 ----------
+    if step.action != ACTION_GENERATE:
+        if plan_trace.last_verdict == VERDICT_EMPTY:
             state.failure_status = "no_documents"
             status = "no_documents"
             detail = "未找到相关文档"
             message = "未找到相关文档。"
         else:
-            state.decision = "refuse"
             state.failure_status = "no_context"
             status = "no_context"
             detail = "未找到足够相关的文档"
@@ -755,8 +832,10 @@ async def _run_agent_answer(
     agent_router: Callable,
     conversation_store,
     memory_service=None,
+    verifier=None,
+    planner=None,
 ) -> dict:
-    """轻量 Agentic RAG：ROUTE/RETRIEVE/CHECK + 非流式生成。"""
+    """轻量 Agentic RAG：ROUTE/RETRIEVE/VERIFY/REPLAN + 非流式生成。"""
     prep = await _prepare_agent_request(
         request=request,
         store=store,
@@ -765,6 +844,8 @@ async def _run_agent_answer(
         agent_router=agent_router,
         conversation_store=conversation_store,
         memory_service=memory_service,
+        verifier=verifier,
+        planner=planner,
     )
     if prep.terminal_message is not None:
         return {"answer": prep.terminal_message, "contexts": []}
@@ -835,6 +916,8 @@ async def ask_question(
     ),
     conversation_store=Depends(get_conversation_store),
     memory_service=Depends(get_memory_service),
+    verifier=Depends(get_verifier),
+    planner=Depends(get_planner),
 ):
     _check_rate_limit(http_request)
     return await _run_agent_answer(
@@ -846,6 +929,8 @@ async def ask_question(
         agent_router=agent_router,
         conversation_store=conversation_store,
         memory_service=memory_service,
+        verifier=verifier,
+        planner=planner,
     )
 
 
@@ -862,6 +947,8 @@ async def ask_question_stream(
     ),
     conversation_store=Depends(get_conversation_store),
     memory_service=Depends(get_memory_service),
+    verifier=Depends(get_verifier),
+    planner=Depends(get_planner),
 ):
     _check_rate_limit(http_request)
     prep = await _prepare_agent_request(
@@ -872,6 +959,8 @@ async def ask_question_stream(
         agent_router=agent_router,
         conversation_store=conversation_store,
         memory_service=memory_service,
+        verifier=verifier,
+        planner=planner,
         log_prefix="rag_stream",
     )
     request_id = prep.request_id

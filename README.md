@@ -99,9 +99,57 @@ Chroma：保存 chunk 向量、文本和来源元数据
   │           → 向量检索 + BM25 关键词检索
   │           → RRF 融合，先召回 top_k × 3
   │           → Reranker 重排序，选最终 top_k
+  │           → Verifier 验证：够用吗？缺什么？
+  │           → 不够用且还有预算 → Planner 重规划查询，再检索一轮
   │           → LLM 根据上下文生成回答
   → 返回答案 + 来源引用
 ```
+
+### Planner / Verifier
+
+检索不是"搜一次不行就拒答"的固定脚本，而是一个有界状态机：
+
+```text
+ROUTE → RETRIEVE → VERIFY → REPLAN → RETRIEVE → ... → GENERATE → VALIDATE
+```
+
+**Verifier** 判断这一轮结果够不够支撑回答，并说明缺什么：
+
+| 结论 | 含义 |
+| --- | --- |
+| `empty` | 一个候选都没有，知识库里就没有相关文档 |
+| `low_score` | 有候选，但都被相关性阈值拦掉 |
+| `low_coverage` | 有文档，但关键术语覆盖率不足，内容跑题 |
+| `sufficient` | 可以进入生成层 |
+
+**Planner** 按失败类型选补救策略，而不是固定重搜原问题：
+
+| 失败类型 | 补救策略 |
+| --- | --- |
+| `empty` / `low_score` | 回到原问题（改写可能把问题带偏了） |
+| `low_coverage` 且完全没覆盖 | 换成关键词查询（更短、更贴 BM25） |
+| 部分覆盖 | 不再重试，降级生成并标记 `degraded` |
+| 没有预算了 | 有文档就最多降级生成，没文档才拒答 |
+
+三条硬约束保证不会死循环：检索次数只由 `max_attempts` 决定、Planner 只能返回
+白名单动作、代码侧还有一层次数兜底（即使 Planner 有 bug 也突破不了上限）。
+`PLANNER_ENABLED=false` 可以一键退回旧行为。
+
+### 验证器校准实验
+
+`evaluate_verifier.py` 用 24 道人工标注题校准这一层，看判断和标注是否一致：
+
+| 场景 | 一致率 | 负样本误放行 | 触发重规划 |
+| --- | --- | --- | --- |
+| 阈值 0.5 + 覆盖度验证 | 1.000 | 0 / 4 | 0.167 |
+| 阈值 0.5 + 不检查覆盖度 | 1.000 | 0 / 4 | 0.167 |
+| 阈值 0.0 + 覆盖度验证 | 1.000 | 2 / 4 | 0.083 |
+| 阈值 0.0 + 不检查覆盖度 | 1.000 | 4 / 4 | 0.000 |
+
+结论：**阈值 0.5 时覆盖度检查没有额外收益，此时它不该开**；一旦关掉阈值，
+没有验证器会把 4/4 道"知识库里根本没有答案"的题照常送给模型，加上覆盖度
+检查后降到 2/4，同时 20 道正样本零误拦截。所以两者是互补的护栏，而不是
+重复造轮子——这也是把它做成可开关配置的原因。
 
 ## 目录结构
 
@@ -122,6 +170,7 @@ services/llm_service.py     LLM 调用与查询改写
 services/agent_state.py     Agent 状态与结构化路由决策
 services/agent_router.py    rules / LLM 两种 Router
 services/tool_agent.py      标准 Function Calling Tool Agent
+services/plan_verify.py     Planner / Verifier 状态机
 services/mcp_client.py      MCP stdio 客户端
 services/mcp_tools.py       MCP 工具 → Function Calling 工具适配
 services/memory_store.py    长期记忆存储（内存/Redis）
@@ -136,6 +185,7 @@ mcp_server/kb_server.py     最小 MCP Server（JSON-RPC + stdio）
 evaluate_retrieval.py       检索层离线评测
 evaluate_agent_router.py    Agent Router（rules vs LLM）对照实验
 evaluate_generation.py      端到端生成层评测
+evaluate_verifier.py        检索验证器校准（与人工标注对比）
 evaluation_dataset.json     人工标注评测集
 analyze_rag_logs.py         RAG/Agent 日志指标聚合
 
@@ -461,3 +511,6 @@ LLM 调用具有总次数上限、指数退避和超时边界；Tool Agent 具�
 8. Router 支持规则与 LLM 两种模式：LLM 输出结构化 JSON 决策，解析失败自动回退规则；用 24 道评测题做了 rules vs llm 对照实验。
 9. 普通与流式接口共用同一套 Agent 状态流，并通过日志记录 route_action、检索次数、阶段耗时，支持按 Router 模式聚合分析。
 10. 实现标准 Function Calling Tool Agent：LLM 通过 tools 协议声明检索工具，支持多工具调用、非法参数兜底、最大步数限制，真实调用验证通过。
+11. 实现 MCP Server 与 stdio 客户端：知识库检索以 JSON-RPC 2.0 协议暴露为标准 MCP 工具，Agent 侧工具声明由 `tools/list` 动态生成，工具白名单直接取自声明，做到「Function Calling ↔ MCP」闭环。
+12. 实现 Planner / Verifier 检索状态机：验证结论分 empty / low_score / low_coverage / sufficient 四档，Planner 按失败类型选补救策略（回原问题或换关键词查询），三重边界防止死循环；并用 24 道标注题做验证器校准，量化出该组件在阈值 0.5 下无收益、阈值关闭时把负样本误放行从 4/4 降到 2/4。
+13. 实现跨会话长期记忆：规则抽取用户画像并注入 Prompt，按 user_id 严格隔离，支持内存 / Redis 后端与 TTL；只从用户话语抽取、绝不从模型回答抽取，避免把幻觉固化成记忆。
