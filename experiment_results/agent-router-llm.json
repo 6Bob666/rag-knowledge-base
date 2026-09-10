@@ -1,0 +1,626 @@
+{
+  "mode": "llm",
+  "summary": {
+    "total_cases": 24,
+    "positive_count": 20,
+    "negative_count": 4,
+    "router_action_counts": {
+      "retrieve": 23,
+      "direct_answer": 1,
+      "refuse": 0
+    },
+    "expected_retrieve_rate": 0.9583333333333334,
+    "positive_recall_at_k": 0.95,
+    "positive_precision_at_k": 0.7916666666666666,
+    "positive_mrr": 0.95,
+    "negative_empty_return_rate": 1.0,
+    "out_of_kb_direct_answer_rate": 0.0,
+    "avg_route_ms": 1183.3,
+    "avg_retrieval_ms": 39.8,
+    "avg_rerank_ms": 959.5,
+    "avg_total_ms": 2182.6
+  },
+  "details": [
+    {
+      "question": "CNN 的核心结构有哪些？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "CNN 的核心结构有哪些？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 0.6666666666666666,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "1155924692512672070",
+          "-2427343140941439082",
+          "-5518122704045881241"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 2879.9,
+        "retrieval_ms": 638.0,
+        "rerank_ms": 1284.1,
+        "total_ms": 4802.0
+      }
+    },
+    {
+      "question": "CNN 的全称是什么？",
+      "router_action": "direct_answer",
+      "router_reason": "常识性事实，无需检索",
+      "router_confidence": 0.95,
+      "query_used": "CNN 的全称是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 0,
+        "precision_at_k": 0,
+        "rr": 0,
+        "returned_chunk_ids": [],
+        "is_negative": false,
+        "returned_count": 0,
+        "skipped_by_router": true
+      },
+      "timings": {
+        "route_ms": 1268.3,
+        "retrieval_ms": 0.0,
+        "rerank_ms": 0.0,
+        "total_ms": 1268.3
+      }
+    },
+    {
+      "question": "ResNet 解决了什么问题？",
+      "router_action": "retrieve",
+      "router_reason": "询问ResNet解决的问题，属于概念性知识，需要检索",
+      "router_confidence": 1.0,
+      "query_used": "ResNet 解决了什么问题？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-1446484906085642270"
+        ],
+        "is_negative": false,
+        "returned_count": 1
+      },
+      "timings": {
+        "route_ms": 1569.8,
+        "retrieval_ms": 9.9,
+        "rerank_ms": 1140.9,
+        "total_ms": 2720.6
+      }
+    },
+    {
+      "question": "CNN 有哪些应用领域？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "CNN 有哪些应用领域？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 0.6666666666666666,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-3023142809904146608",
+          "-1038206344583972107",
+          "-2196137171851464893"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 1021.4,
+        "retrieval_ms": 17.1,
+        "rerank_ms": 1123.1,
+        "total_ms": 2161.6
+      }
+    },
+    {
+      "question": "Transformer 是哪一年提出的？",
+      "router_action": "retrieve",
+      "router_reason": "询问事实年份，需检索资料确认",
+      "router_confidence": 0.95,
+      "query_used": "Transformer 是哪一年提出的？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-6867316513934236315",
+          "-5208822457362137846",
+          "-8333297702724469122"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 1186.5,
+        "retrieval_ms": 13.2,
+        "rerank_ms": 462.0,
+        "total_ms": 1661.7
+      }
+    },
+    {
+      "question": "深度学习是什么？",
+      "router_action": "retrieve",
+      "router_reason": "用户询问深度学习的定义，属于需要知识库事实的概念性问题",
+      "router_confidence": 0.95,
+      "query_used": "深度学习是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "281229924000963678"
+        ],
+        "is_negative": false,
+        "returned_count": 1
+      },
+      "timings": {
+        "route_ms": 1003.4,
+        "retrieval_ms": 13.7,
+        "rerank_ms": 1007.3,
+        "total_ms": 2024.4
+      }
+    },
+    {
+      "question": "自然语言处理包括哪些任务？",
+      "router_action": "retrieve",
+      "router_reason": "询问自然语言处理的具体任务范围，需知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "自然语言处理包括哪些任务？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-1075266231749530337"
+        ],
+        "is_negative": false,
+        "returned_count": 1
+      },
+      "timings": {
+        "route_ms": 1302.9,
+        "retrieval_ms": 15.9,
+        "rerank_ms": 483.4,
+        "total_ms": 1802.2
+      }
+    },
+    {
+      "question": "池化层的作用是什么？",
+      "router_action": "retrieve",
+      "router_reason": "询问池化层的作用，属于知识库中的技术概念",
+      "router_confidence": 0.95,
+      "query_used": "池化层的作用是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "6637959853819315390",
+          "3426670488139986560",
+          "2359563620344747748"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 975.9,
+        "retrieval_ms": 15.5,
+        "rerank_ms": 1133.1,
+        "total_ms": 2124.5
+      }
+    },
+    {
+      "question": "卷积层的作用是什么？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "卷积层的作用是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-7931891359671978749",
+          "-5518122704045881241",
+          "6543792310319246442"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 1119.3,
+        "retrieval_ms": 11.3,
+        "rerank_ms": 1101.6,
+        "total_ms": 2232.2
+      }
+    },
+    {
+      "question": "全连接层的作用是什么？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "全连接层的作用是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-419018054292771344",
+          "-4095098712333165222",
+          "5530933194606997375"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 833.1,
+        "retrieval_ms": 11.9,
+        "rerank_ms": 735.3,
+        "total_ms": 1580.3
+      }
+    },
+    {
+      "question": "RNN 主要用于处理什么数据？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "RNN 主要用于处理什么数据？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "749000663186001851",
+          "574963061111272851",
+          "5772014950124227594"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 1051.4,
+        "retrieval_ms": 12.4,
+        "rerank_ms": 1107.4,
+        "total_ms": 2171.2
+      }
+    },
+    {
+      "question": "BERT 是什么？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "BERT 是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-7662626398335416398",
+          "8542982397149879946",
+          "1194022290468591980"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 1146.3,
+        "retrieval_ms": 13.3,
+        "rerank_ms": 991.4,
+        "total_ms": 2151.0
+      }
+    },
+    {
+      "question": "GPT 系列模型由谁开发？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "GPT 系列模型由谁开发？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-4056551846608179727",
+          "308902400300357856",
+          "-7887707981037143014"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 1291.2,
+        "retrieval_ms": 12.4,
+        "rerank_ms": 449.1,
+        "total_ms": 1752.7
+      }
+    },
+    {
+      "question": "CNN 的训练通常需要什么？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.9,
+      "query_used": "CNN 的训练通常需要什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-8915026293567996486"
+        ],
+        "is_negative": false,
+        "returned_count": 1
+      },
+      "timings": {
+        "route_ms": 1297.1,
+        "retrieval_ms": 13.7,
+        "rerank_ms": 1117.5,
+        "total_ms": 2428.3
+      }
+    },
+    {
+      "question": "池化层常用的有哪两种？",
+      "router_action": "retrieve",
+      "router_reason": "询问池化层的具体类型，需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "池化层常用的有哪两种？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 0.6666666666666666,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "3426670488139986560",
+          "3065409946327893778",
+          "6637959853819315390"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 1215.5,
+        "retrieval_ms": 13.3,
+        "rerank_ms": 1193.9,
+        "total_ms": 2422.7
+      }
+    },
+    {
+      "question": "卷积核是什么？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.9,
+      "query_used": "卷积核是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 0.3333333333333333,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-5101725002081191738",
+          "-7931891359671978749",
+          "-5572441067015943721"
+        ],
+        "is_negative": false,
+        "returned_count": 3
+      },
+      "timings": {
+        "route_ms": 819.3,
+        "retrieval_ms": 18.0,
+        "rerank_ms": 1240.3,
+        "total_ms": 2077.6
+      }
+    },
+    {
+      "question": "全连接层占神经网络多少参数？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "全连接层占神经网络多少参数？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 0.5,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "44329683506525223",
+          "5530933194606997375"
+        ],
+        "is_negative": false,
+        "returned_count": 2
+      },
+      "timings": {
+        "route_ms": 877.2,
+        "retrieval_ms": 17.4,
+        "rerank_ms": 760.9,
+        "total_ms": 1655.5
+      }
+    },
+    {
+      "question": "Vision Transformer 是什么？",
+      "router_action": "retrieve",
+      "router_reason": "询问Vision Transformer的定义，需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "Vision Transformer 是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "3012379862023207607"
+        ],
+        "is_negative": false,
+        "returned_count": 1
+      },
+      "timings": {
+        "route_ms": 1244.4,
+        "retrieval_ms": 14.3,
+        "rerank_ms": 1188.4,
+        "total_ms": 2447.1
+      }
+    },
+    {
+      "question": "池化层引入了什么不变性？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库中的深度学习概念知识",
+      "router_confidence": 0.95,
+      "query_used": "池化层引入了什么不变性？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 0.5,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "2359563620344747748",
+          "6126253287347848113"
+        ],
+        "is_negative": false,
+        "returned_count": 2
+      },
+      "timings": {
+        "route_ms": 1021.0,
+        "retrieval_ms": 14.0,
+        "rerank_ms": 978.0,
+        "total_ms": 2013.0
+      }
+    },
+    {
+      "question": "神经网络由什么组成？",
+      "router_action": "retrieve",
+      "router_reason": "询问神经网络组成的概念性知识，需要知识库支持",
+      "router_confidence": 0.98,
+      "query_used": "神经网络由什么组成？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 1,
+        "precision_at_k": 0.5,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "3607952443320892979",
+          "-5526481663710361146"
+        ],
+        "is_negative": false,
+        "returned_count": 2
+      },
+      "timings": {
+        "route_ms": 1092.4,
+        "retrieval_ms": 15.5,
+        "rerank_ms": 1100.0,
+        "total_ms": 2207.9
+      }
+    },
+    {
+      "question": "LoRA 是什么？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.9,
+      "query_used": "LoRA 是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 0,
+        "precision_at_k": 0,
+        "rr": 0,
+        "returned_chunk_ids": [],
+        "is_negative": true,
+        "returned_count": 0
+      },
+      "timings": {
+        "route_ms": 920.9,
+        "retrieval_ms": 12.6,
+        "rerank_ms": 1094.4,
+        "total_ms": 2027.9
+      }
+    },
+    {
+      "question": "ChatGPT 是哪一年发布的？",
+      "router_action": "retrieve",
+      "router_reason": "需要知识库事实",
+      "router_confidence": 0.95,
+      "query_used": "ChatGPT 是哪一年发布的？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 0,
+        "precision_at_k": 0,
+        "rr": 0,
+        "returned_chunk_ids": [],
+        "is_negative": true,
+        "returned_count": 0
+      },
+      "timings": {
+        "route_ms": 1209.6,
+        "retrieval_ms": 12.7,
+        "rerank_ms": 1134.2,
+        "total_ms": 2356.5
+      }
+    },
+    {
+      "question": "支持向量机（SVM）是什么？",
+      "router_action": "retrieve",
+      "router_reason": "询问概念定义，需要知识库事实",
+      "router_confidence": 1.0,
+      "query_used": "支持向量机（SVM）是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 0,
+        "precision_at_k": 0,
+        "rr": 0,
+        "returned_chunk_ids": [],
+        "is_negative": true,
+        "returned_count": 0
+      },
+      "timings": {
+        "route_ms": 909.1,
+        "retrieval_ms": 17.9,
+        "rerank_ms": 1167.8,
+        "total_ms": 2094.8
+      }
+    },
+    {
+      "question": "Transformer-XL 是什么？",
+      "router_action": "retrieve",
+      "router_reason": "询问概念定义，需要知识库事实",
+      "router_confidence": 1.0,
+      "query_used": "Transformer-XL 是什么？",
+      "expected_retrieve": true,
+      "metrics": {
+        "recall_at_k": 0,
+        "precision_at_k": 0,
+        "rr": 0,
+        "returned_chunk_ids": [],
+        "is_negative": true,
+        "returned_count": 0
+      },
+      "timings": {
+        "route_ms": 1143.4,
+        "retrieval_ms": 21.3,
+        "rerank_ms": 1034.7,
+        "total_ms": 2199.4
+      }
+    }
+  ],
+  "metadata": {
+    "dataset": "D:\\software\\Pycharm\\Project\\test1\\fastApiProject\\evaluation_dataset.json",
+    "top_k": 3,
+    "reranker_score_threshold": 0.5,
+    "reranker_model_path": "D:\\software\\Pycharm\\Project\\test1\\fastApiProject\\model\\bge-reranker-v2-m3",
+    "created_at": "2026-09-07T12:52:27.644329+00:00",
+    "note": "检索阶段统一使用 Router 提供的 query 或原问题，不调用查询改写器，以隔离 Router 对检索的影响"
+  },
+  "experiment_id": "agent-router-llm"
+}

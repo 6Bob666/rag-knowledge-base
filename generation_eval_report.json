@@ -1,0 +1,99 @@
+{
+  "metadata": {
+    "dataset": "D:\\software\\Pycharm\\Project\\test1\\fastApiProject\\evaluation_dataset.json",
+    "top_k": 3,
+    "reranker_score_threshold": 0.5,
+    "llm_model_name": "deepseek-v4-flash",
+    "created_at": "2026-09-04T12:20:42.119679+00:00"
+  },
+  "results": [
+    {
+      "question": "CNN 的核心结构有哪些？",
+      "answer": "根据上下文，CNN 的核心结构包括卷积层（Convolutional Layer）、池化层（Pooling Layer）和全连接层（Fully Connected Layer）。",
+      "ground_truth": "卷积层、池化层、全连接层",
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "faithfulness": 1.0,
+      "context_recall": 1.0,
+      "answer_relevance": 1.0,
+      "answer_sentences": 1,
+      "faithful_supported": 1,
+      "returned_chunk_ids": [
+        "1155924692512672070",
+        "-2427343140941439082",
+        "-5518122704045881241"
+      ]
+    },
+    {
+      "question": "CNN 的全称是什么？",
+      "answer": "CNN 的全称是 \"Convolutional Neural Network\"（卷积神经网络）。",
+      "ground_truth": "Convolutional Neural Network（卷积神经网络）",
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "faithfulness": 1.0,
+      "context_recall": 1.0,
+      "answer_relevance": 1.0,
+      "answer_sentences": 1,
+      "faithful_supported": 1,
+      "returned_chunk_ids": [
+        "-521577992233334688",
+        "-5572441067015943721",
+        "8106130154189106110"
+      ]
+    },
+    {
+      "question": "ResNet 解决了什么问题？",
+      "answer": "梯度消失问题。",
+      "ground_truth": "深层网络的梯度消失问题",
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "faithfulness": 0.0,
+      "context_recall": 0.0,
+      "answer_relevance": 1.0,
+      "answer_sentences": 1,
+      "faithful_supported": 0,
+      "returned_chunk_ids": [
+        "-1446484906085642270"
+      ]
+    },
+    {
+      "question": "CNN 有哪些应用领域？",
+      "answer": "根据上下文，CNN 的应用领域包括：图像分类、目标检测、图像分割、人脸识别，以及自然语言处理和语音识别。",
+      "ground_truth": "图像分类、目标检测、图像分割、人脸识别、自然语言处理、语音识别等",
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "faithfulness": 1.0,
+      "context_recall": 1.0,
+      "answer_relevance": 1.0,
+      "answer_sentences": 1,
+      "faithful_supported": 1,
+      "returned_chunk_ids": [
+        "-3023142809904146608",
+        "-1038206344583972107",
+        "-2196137171851464893"
+      ]
+    },
+    {
+      "question": "Transformer 是哪一年提出的？",
+      "answer": "2017年",
+      "ground_truth": "2017 年",
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "faithfulness": 1.0,
+      "context_recall": 1.0,
+      "answer_relevance": 1.0,
+      "answer_sentences": 1,
+      "faithful_supported": 1,
+      "returned_chunk_ids": [
+        "-6867316513934236315",
+        "-5208822457362137846",
+        "-8333297702724469122"
+      ]
+    }
+  ]
+}

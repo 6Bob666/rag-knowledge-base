@@ -1,0 +1,55 @@
+[
+  {
+    "id": "hard-001-multiturn-pronoun",
+    "history": [
+      {
+        "role": "user",
+        "content": "CNN 的全称是什么？"
+      },
+      {
+        "role": "assistant",
+        "content": "CNN 的全称是 Convolutional Neural Network（卷积神经网络）。"
+      }
+    ],
+    "question": "它有哪些应用领域？",
+    "rewritten_query": "CNN 有哪些应用领域？",
+    "ground_truth_answer": "图像分类、目标检测、图像分割、人脸识别等",
+    "relevant_chunk_ids": [
+      "-1038206344583972107",
+      "-8248542632231644611",
+      "-3023142809904146608"
+    ],
+    "why_hard": "原问题使用代词“它”，直接检索语义不完整，必须先结合历史理解指代。"
+  },
+  {
+    "id": "hard-002-colloquial",
+    "question": "深度学习那种靠好多层神经网络做识别的方法，到底叫啥？",
+    "rewritten_query": "深度学习是什么？",
+    "ground_truth_answer": "深度学习是机器学习的一个子集，使用多层神经网络进行模式识别",
+    "relevant_chunk_ids": [
+      "281229924000963678"
+    ],
+    "why_hard": "用户表达口语化、绕弯，直接检索可能命中多个“神经网络”相关 chunk。"
+  },
+  {
+    "id": "hard-003-paraphrase",
+    "question": "卷积之后把特征图变小、让计算量下降的那一步有什么用？",
+    "rewritten_query": "池化层的作用是什么？",
+    "ground_truth_answer": "下采样、降低特征图维度、减少计算量、保证平移不变性",
+    "relevant_chunk_ids": [
+      "6637959853819315390",
+      "6126253287347848113",
+      "2359563620344747748",
+      "3426670488139986560"
+    ],
+    "why_hard": "用户没有说出“池化层”这个术语，完全依赖改写后才能对齐知识库表达。"
+  },
+  {
+    "id": "hard-004-negative",
+    "question": "Transformer-XL 论文的作者是谁？",
+    "rewritten_query": "Transformer-XL 论文的作者",
+    "ground_truth_answer": "",
+    "relevant_chunk_ids": [],
+    "why_hard": "知识库可能不包含该信息，系统应该检索无果后拒答，而不是硬答。"
+  }
+]

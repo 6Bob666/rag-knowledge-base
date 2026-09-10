@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 虚拟环境
+.venv/
+.venv311/
+
+# IDE 与测试缓存
+.idea/
+.pytest_cache/
+
+# 密钥和本地配置
+.env
+
+# 本地模型与知识库数据
+model/
+chroma_data/
+uploads/
+logs/
+
+# 本地数据库与缓存
+*.db
+*.sqlite
+*.pkl
+
+# 简历等本地文档
+*.docx
+
+# 本地运行产生的评测中间结果（含知识库原文，不公开）
+eval_results.json
+manual_eval_results.json
+experiment_results/fixed-vs-tool-agent.json
+
+# 学习阶段的遗留文件
+main1.py
+test.html
+
+# 系统文件
+.DS_Store
+Thumbs.db

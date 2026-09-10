@@ -1,0 +1,837 @@
+[
+  {
+    "question": "CNN 的核心结构有哪些？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "1155924692512672070",
+        "-8248542632231644611",
+        "-5518122704045881241"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 744.7,
+        "total_ms": 744.7
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "1155924692512672070",
+        "-2427343140941439082",
+        "-5518122704045881241"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 12.1,
+        "rerank_ms": 1394.2,
+        "total_ms": 1406.3
+      }
+    }
+  },
+  {
+    "question": "CNN 的全称是什么？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-521577992233334688",
+        "-8465895258031651565",
+        "3757184279750446465"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 10.7,
+        "total_ms": 10.7
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-521577992233334688",
+        "-5572441067015943721",
+        "8106130154189106110"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 6.3,
+        "rerank_ms": 1134.8,
+        "total_ms": 1141.1
+      }
+    }
+  },
+  {
+    "question": "ResNet 解决了什么问题？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-1446484906085642270",
+        "-8000777707409830445",
+        "-8465895258031651565"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 15.7,
+        "total_ms": 15.7
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-1446484906085642270"
+      ],
+      "is_negative": false,
+      "returned_count": 1,
+      "timings": {
+        "retrieval_ms": 8.6,
+        "rerank_ms": 1135.4,
+        "total_ms": 1144.0
+      }
+    }
+  },
+  {
+    "question": "CNN 有哪些应用领域？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 0.3333333333333333,
+      "returned_chunk_ids": [
+        "3757184279750446465",
+        "-2427343140941439082",
+        "-3023142809904146608"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 13.3,
+        "total_ms": 13.3
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-3023142809904146608",
+        "-1038206344583972107",
+        "-2196137171851464893"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 8.3,
+        "rerank_ms": 1120.6,
+        "total_ms": 1128.9
+      }
+    }
+  },
+  {
+    "question": "Transformer 是哪一年提出的？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-6867316513934236315",
+        "3012379862023207607",
+        "-5208822457362137846"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 8.0,
+        "total_ms": 8.0
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-6867316513934236315",
+        "-5208822457362137846",
+        "-8333297702724469122"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 9.8,
+        "rerank_ms": 469.9,
+        "total_ms": 479.7
+      }
+    }
+  },
+  {
+    "question": "深度学习是什么？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "281229924000963678",
+        "-5572441067015943721",
+        "8106130154189106110"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 9.1,
+        "total_ms": 9.1
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "281229924000963678"
+      ],
+      "is_negative": false,
+      "returned_count": 1,
+      "timings": {
+        "retrieval_ms": 8.6,
+        "rerank_ms": 1089.0,
+        "total_ms": 1097.6
+      }
+    }
+  },
+  {
+    "question": "自然语言处理包括哪些任务？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-1075266231749530337",
+        "-3023142809904146608",
+        "-7662626398335416398"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 8.7,
+        "total_ms": 8.7
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-1075266231749530337"
+      ],
+      "is_negative": false,
+      "returned_count": 1,
+      "timings": {
+        "retrieval_ms": 8.2,
+        "rerank_ms": 486.5,
+        "total_ms": 494.7
+      }
+    }
+  },
+  {
+    "question": "池化层的作用是什么？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "6637959853819315390",
+        "-5566131979660117088",
+        "2359563620344747748"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 9.7,
+        "total_ms": 9.7
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "6637959853819315390",
+        "3426670488139986560",
+        "2359563620344747748"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 10.5,
+        "rerank_ms": 1217.5,
+        "total_ms": 1228.0
+      }
+    }
+  },
+  {
+    "question": "卷积层的作用是什么？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-5518122704045881241",
+        "6543792310319246442",
+        "-5121724826851424160"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 10.3,
+        "total_ms": 10.3
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-7931891359671978749",
+        "-5518122704045881241",
+        "6543792310319246442"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 9.1,
+        "rerank_ms": 1180.1,
+        "total_ms": 1189.2
+      }
+    }
+  },
+  {
+    "question": "全连接层的作用是什么？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-4095098712333165222",
+        "-419018054292771344",
+        "44329683506525223"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 7.9,
+        "total_ms": 7.9
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-419018054292771344",
+        "-4095098712333165222",
+        "5530933194606997375"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 10.5,
+        "rerank_ms": 742.0,
+        "total_ms": 752.5
+      }
+    }
+  },
+  {
+    "question": "RNN 主要用于处理什么数据？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "749000663186001851",
+        "574963061111272851",
+        "5772014950124227594"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 9.3,
+        "total_ms": 9.3
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "749000663186001851",
+        "574963061111272851",
+        "5772014950124227594"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 6.7,
+        "rerank_ms": 1164.9,
+        "total_ms": 1171.6
+      }
+    }
+  },
+  {
+    "question": "BERT 是什么？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-7662626398335416398",
+        "8542982397149879946",
+        "1194022290468591980"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 12.0,
+        "total_ms": 12.0
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-7662626398335416398",
+        "8542982397149879946",
+        "1194022290468591980"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 9.8,
+        "rerank_ms": 1086.3,
+        "total_ms": 1096.1
+      }
+    }
+  },
+  {
+    "question": "GPT 系列模型由谁开发？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-4056551846608179727",
+        "308902400300357856",
+        "-7887707981037143014"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 10.9,
+        "total_ms": 10.9
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-4056551846608179727",
+        "308902400300357856",
+        "-7887707981037143014"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 11.8,
+        "rerank_ms": 472.8,
+        "total_ms": 484.6
+      }
+    }
+  },
+  {
+    "question": "CNN 的训练通常需要什么？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-8915026293567996486",
+        "-8465895258031651565",
+        "3757184279750446465"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 10.5,
+        "total_ms": 10.5
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-8915026293567996486"
+      ],
+      "is_negative": false,
+      "returned_count": 1,
+      "timings": {
+        "retrieval_ms": 9.4,
+        "rerank_ms": 1124.3,
+        "total_ms": 1133.7
+      }
+    }
+  },
+  {
+    "question": "池化层常用的有哪两种？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "3426670488139986560",
+        "-5747944260367186211",
+        "2359563620344747748"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 8.1,
+        "total_ms": 8.1
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "3426670488139986560",
+        "3065409946327893778",
+        "6637959853819315390"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 10.0,
+        "rerank_ms": 1215.8,
+        "total_ms": 1225.8
+      }
+    }
+  },
+  {
+    "question": "卷积核是什么？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 0.5,
+      "returned_chunk_ids": [
+        "6543792310319246442",
+        "-5101725002081191738",
+        "-3764409297739589829"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 19.2,
+        "total_ms": 19.2
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "-5101725002081191738",
+        "-7931891359671978749",
+        "-5572441067015943721"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 14.0,
+        "rerank_ms": 1506.5,
+        "total_ms": 1520.5
+      }
+    }
+  },
+  {
+    "question": "全连接层占神经网络多少参数？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "44329683506525223",
+        "5530933194606997375",
+        "-4095098712333165222"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 9.1,
+        "total_ms": 9.1
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.5,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "44329683506525223",
+        "5530933194606997375"
+      ],
+      "is_negative": false,
+      "returned_count": 2,
+      "timings": {
+        "retrieval_ms": 7.0,
+        "rerank_ms": 689.7,
+        "total_ms": 696.7
+      }
+    }
+  },
+  {
+    "question": "Vision Transformer 是什么？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "3012379862023207607",
+        "-6867316513934236315",
+        "-5208822457362137846"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 7.7,
+        "total_ms": 7.7
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "3012379862023207607"
+      ],
+      "is_negative": false,
+      "returned_count": 1,
+      "timings": {
+        "retrieval_ms": 8.6,
+        "rerank_ms": 1034.6,
+        "total_ms": 1043.2
+      }
+    }
+  },
+  {
+    "question": "池化层引入了什么不变性？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "2359563620344747748",
+        "-5566131979660117088",
+        "-5747944260367186211"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 8.5,
+        "total_ms": 8.5
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.5,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "2359563620344747748",
+        "6126253287347848113"
+      ],
+      "is_negative": false,
+      "returned_count": 2,
+      "timings": {
+        "retrieval_ms": 7.4,
+        "rerank_ms": 969.3,
+        "total_ms": 976.7
+      }
+    }
+  },
+  {
+    "question": "神经网络由什么组成？",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "3607952443320892979",
+        "-5526481663710361146",
+        "-8465895258031651565"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 6.7,
+        "total_ms": 6.7
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.5,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "3607952443320892979",
+        "-5526481663710361146"
+      ],
+      "is_negative": false,
+      "returned_count": 2,
+      "timings": {
+        "retrieval_ms": 6.9,
+        "rerank_ms": 1047.9,
+        "total_ms": 1054.8
+      }
+    }
+  },
+  {
+    "question": "LoRA 是什么？",
+    "baseline": {
+      "recall_at_k": 0,
+      "precision_at_k": 0,
+      "rr": 0,
+      "returned_chunk_ids": [
+        "-8465895258031651565",
+        "749000663186001851",
+        "574963061111272851"
+      ],
+      "is_negative": true,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 9.0,
+        "total_ms": 9.0
+      }
+    },
+    "reranked": {
+      "recall_at_k": 0,
+      "precision_at_k": 0,
+      "rr": 0,
+      "returned_chunk_ids": [],
+      "is_negative": true,
+      "returned_count": 0,
+      "timings": {
+        "retrieval_ms": 8.1,
+        "rerank_ms": 989.6,
+        "total_ms": 997.7
+      }
+    }
+  },
+  {
+    "question": "ChatGPT 是哪一年发布的？",
+    "baseline": {
+      "recall_at_k": 0,
+      "precision_at_k": 0,
+      "rr": 0,
+      "returned_chunk_ids": [
+        "-6867316513934236315",
+        "-8465895258031651565",
+        "-5208822457362137846"
+      ],
+      "is_negative": true,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 8.6,
+        "total_ms": 8.6
+      }
+    },
+    "reranked": {
+      "recall_at_k": 0,
+      "precision_at_k": 0,
+      "rr": 0,
+      "returned_chunk_ids": [],
+      "is_negative": true,
+      "returned_count": 0,
+      "timings": {
+        "retrieval_ms": 8.0,
+        "rerank_ms": 1160.7,
+        "total_ms": 1168.7
+      }
+    }
+  },
+  {
+    "question": "支持向量机（SVM）是什么？",
+    "baseline": {
+      "recall_at_k": 0,
+      "precision_at_k": 0,
+      "rr": 0,
+      "returned_chunk_ids": [
+        "-5572441067015943721",
+        "8106130154189106110",
+        "-8690463781539406055"
+      ],
+      "is_negative": true,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 7.3,
+        "total_ms": 7.3
+      }
+    },
+    "reranked": {
+      "recall_at_k": 0,
+      "precision_at_k": 0,
+      "rr": 0,
+      "returned_chunk_ids": [],
+      "is_negative": true,
+      "returned_count": 0,
+      "timings": {
+        "retrieval_ms": 9.9,
+        "rerank_ms": 1130.3,
+        "total_ms": 1140.2
+      }
+    }
+  },
+  {
+    "question": "Transformer-XL 是什么？",
+    "baseline": {
+      "recall_at_k": 0,
+      "precision_at_k": 0,
+      "rr": 0,
+      "returned_chunk_ids": [
+        "-6867316513934236315",
+        "-5208822457362137846",
+        "-3986198026661012435"
+      ],
+      "is_negative": true,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 9.5,
+        "total_ms": 9.5
+      }
+    },
+    "reranked": {
+      "recall_at_k": 0,
+      "precision_at_k": 0,
+      "rr": 0,
+      "returned_chunk_ids": [],
+      "is_negative": true,
+      "returned_count": 0,
+      "timings": {
+        "retrieval_ms": 8.9,
+        "rerank_ms": 1522.5,
+        "total_ms": 1531.4
+      }
+    }
+  }
+]

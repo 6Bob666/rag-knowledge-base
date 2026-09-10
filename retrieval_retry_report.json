@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "dataset": "D:\\software\\Pycharm\\Project\\test1\\fastApiProject\\evaluation_dataset_hard.example.json",
+    "top_k": 3,
+    "reranker_score_threshold": 0.5,
+    "created_at": "2026-09-07T00:06:34.019413+00:00",
+    "settings_chunk_size": 500
+  },
+  "summary": {
+    "single": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.8888888888888888,
+      "mrr": 1.0,
+      "rejection_rate": 1.0
+    },
+    "retry": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.8888888888888888,
+      "mrr": 1.0,
+      "rejection_rate": 1.0
+    }
+  },
+  "retry_triggered_rate": 0.25,
+  "details": [
+    {
+      "id": "hard-001-multiturn-pronoun",
+      "question": "它有哪些应用领域？",
+      "rewritten_query": "CNN 有哪些应用领域？",
+      "queries_used": [
+        "CNN 有哪些应用领域？"
+      ],
+      "retry_triggered": false,
+      "attempt_count": 1,
+      "single": {
+        "recall_at_k": 1,
+        "precision_at_k": 0.6666666666666666,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-3023142809904146608",
+          "-1038206344583972107",
+          "-2196137171851464893"
+        ],
+        "is_negative": false,
+        "returned_count": 3,
+        "elapsed_ms": 4533.5
+      },
+      "retry": {
+        "recall_at_k": 1,
+        "precision_at_k": 0.6666666666666666,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "-3023142809904146608",
+          "-1038206344583972107",
+          "-2196137171851464893"
+        ],
+        "is_negative": false,
+        "returned_count": 3,
+        "elapsed_ms": 4533.5
+      }
+    },
+    {
+      "id": "hard-002-colloquial",
+      "question": "深度学习那种靠好多层神经网络做识别的方法，到底叫啥？",
+      "rewritten_query": "深度学习是什么？",
+      "queries_used": [
+        "深度学习是什么？"
+      ],
+      "retry_triggered": false,
+      "attempt_count": 1,
+      "single": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "281229924000963678"
+        ],
+        "is_negative": false,
+        "returned_count": 1,
+        "elapsed_ms": 1180.6
+      },
+      "retry": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "281229924000963678"
+        ],
+        "is_negative": false,
+        "returned_count": 1,
+        "elapsed_ms": 1180.6
+      }
+    },
+    {
+      "id": "hard-003-paraphrase",
+      "question": "卷积之后把特征图变小、让计算量下降的那一步有什么用？",
+      "rewritten_query": "池化层的作用是什么？",
+      "queries_used": [
+        "池化层的作用是什么？"
+      ],
+      "retry_triggered": false,
+      "attempt_count": 1,
+      "single": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "6637959853819315390",
+          "3426670488139986560",
+          "2359563620344747748"
+        ],
+        "is_negative": false,
+        "returned_count": 3,
+        "elapsed_ms": 1225.5
+      },
+      "retry": {
+        "recall_at_k": 1,
+        "precision_at_k": 1.0,
+        "rr": 1.0,
+        "returned_chunk_ids": [
+          "6637959853819315390",
+          "3426670488139986560",
+          "2359563620344747748"
+        ],
+        "is_negative": false,
+        "returned_count": 3,
+        "elapsed_ms": 1225.5
+      }
+    },
+    {
+      "id": "hard-004-negative",
+      "question": "Transformer-XL 论文的作者是谁？",
+      "rewritten_query": "Transformer-XL 论文的作者",
+      "queries_used": [
+        "Transformer-XL 论文的作者",
+        "Transformer-XL 论文的作者是谁？"
+      ],
+      "retry_triggered": true,
+      "attempt_count": 2,
+      "single": {
+        "recall_at_k": 0,
+        "precision_at_k": 0,
+        "rr": 0,
+        "returned_chunk_ids": [],
+        "is_negative": true,
+        "returned_count": 0,
+        "elapsed_ms": 574.9
+      },
+      "retry": {
+        "recall_at_k": 0,
+        "precision_at_k": 0,
+        "rr": 0,
+        "returned_chunk_ids": [],
+        "is_negative": true,
+        "returned_count": 0,
+        "elapsed_ms": 1718.1
+      }
+    }
+  ]
+}

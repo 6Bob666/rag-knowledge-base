@@ -1,0 +1,51 @@
+services:
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  rag-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      CHROMA_PATH: /app/chroma_data
+      DATABASE_URL: sqlite:////app/data/knowledge_base.db
+      EMBEDDING_MODEL_PATH: /app/model/bge-small-zh-v1.5
+      RERANKER_MODEL_PATH: /app/model/bge-reranker-v2-m3
+      CONVERSATION_STORE_BACKEND: redis
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./model:/app/model:ro
+      - ./chroma_data:/app/chroma_data
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+      - ./knowledge_base.db:/app/data/knowledge_base.db
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+volumes:
+  redis_data:

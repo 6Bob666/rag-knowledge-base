@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+pydantic-settings
+sqlalchemy
+chromadb
+rank-bm25
+jieba
+openai
+python-multipart
+numpy
+sentence-transformers
+pytest
+httpx
+redis

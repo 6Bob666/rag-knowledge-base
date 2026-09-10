@@ -1,0 +1,42 @@
+name: RAG CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Compile critical modules
+        run: >-
+          python -m py_compile main.py config.py schemas.py
+          routers/chat.py routers/health.py routers/metrics.py
+          services/*.py
+
+      - name: Run tests without external LLM
+        run: python -m pytest -q tests --junitxml=test-results/pytest.xml
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-report
+          path: test-results/pytest.xml

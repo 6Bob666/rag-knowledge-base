@@ -1,0 +1,48 @@
+{
+  "summary": {
+    "rules": {
+      "total_cases": 24,
+      "positive_count": 20,
+      "negative_count": 4,
+      "router_action_counts": {
+        "retrieve": 24,
+        "direct_answer": 0,
+        "refuse": 0
+      },
+      "expected_retrieve_rate": 1.0,
+      "positive_recall_at_k": 1,
+      "positive_precision_at_k": 0.8416666666666667,
+      "positive_mrr": 1.0,
+      "negative_empty_return_rate": 1.0,
+      "out_of_kb_direct_answer_rate": 0.0,
+      "avg_route_ms": 0.0,
+      "avg_retrieval_ms": 42.8,
+      "avg_rerank_ms": 1082.6,
+      "avg_total_ms": 1125.4
+    },
+    "llm": {
+      "total_cases": 24,
+      "positive_count": 20,
+      "negative_count": 4,
+      "router_action_counts": {
+        "retrieve": 23,
+        "direct_answer": 1,
+        "refuse": 0
+      },
+      "expected_retrieve_rate": 0.9583333333333334,
+      "positive_recall_at_k": 0.95,
+      "positive_precision_at_k": 0.7916666666666666,
+      "positive_mrr": 0.95,
+      "negative_empty_return_rate": 1.0,
+      "out_of_kb_direct_answer_rate": 0.0,
+      "avg_route_ms": 1183.3,
+      "avg_retrieval_ms": 39.8,
+      "avg_rerank_ms": 959.5,
+      "avg_total_ms": 2182.6
+    }
+  },
+  "metadata": {
+    "note": "rules vs llm Agent Router + hybrid+reranker, threshold=0.5, top_k=3",
+    "created_at": "2026-09-07"
+  }
+}
