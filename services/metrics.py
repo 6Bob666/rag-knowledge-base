@@ -64,3 +64,29 @@ def calculate_precision_at_k(
     relevant_id_set = set(relevant_ids)
     relevant_count = sum(chunk_id in relevant_id_set for chunk_id in top_k_ids)
     return relevant_count / len(top_k_ids)
+
+
+def percentile(values: list[float], ratio: float) -> float:
+    """最近秩百分位。
+
+    不用线性插值：插值会算出"没有任何请求真正经历过"的耗时，
+    看板和压测要的是真实观察值，宁可保守取到下一个样本。
+    """
+    if not values:
+        return 0.0
+    ordered = sorted(values)
+    index = min(len(ordered) - 1, max(0, round(len(ordered) * ratio) - 1))
+    return ordered[index]
+
+
+def recall_at_k_from_ids(
+    returned_ids: list[str], exact_ids: list[str], k: int
+) -> float:
+    """近似检索命中率：前 K 个结果里命中了多少真正的前 K 个邻居。"""
+    if k <= 0:
+        raise ValueError("k 必须大于 0")
+    if not exact_ids:
+        raise ValueError("exact_ids 不能为空")
+    return len(set(returned_ids[:k]) & set(exact_ids[:k])) / len(
+        exact_ids[:k]
+    )

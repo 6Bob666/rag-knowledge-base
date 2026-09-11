@@ -18,6 +18,8 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from services.metrics import percentile
+
 
 LINE_PATTERN = re.compile(
     r"rag_(?:answer|stream) "
@@ -79,15 +81,6 @@ def parse_rag_log_line(line: str) -> dict | None:
     for field in FIELD_PATTERN.finditer(data["fields"]):
         result[field.group("name")] = _coerce(field.group("value"))
     return result
-
-
-def percentile(values: list[float], ratio: float) -> float:
-    """最近秩百分位；样本少时不会插值出一个没人经历过的耗时。"""
-    if not values:
-        return 0.0
-    ordered = sorted(values)
-    index = min(len(ordered) - 1, max(0, round(len(ordered) * ratio) - 1))
-    return ordered[index]
 
 
 def aggregate_rag_logs(lines) -> dict:

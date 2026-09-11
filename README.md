@@ -196,6 +196,7 @@ evaluate_retrieval.py       检索层离线评测
 evaluate_agent_router.py    Agent Router（rules vs LLM）对照实验
 evaluate_generation.py      端到端生成层评测
 evaluate_verifier.py        检索验证器校准（与人工标注对比）
+benchmark_index.py         向量索引规模压测（HNSW 参数 vs 召回/延迟）
 evaluation_dataset.json     人工标注评测集
 analyze_rag_logs.py         RAG/Agent 日志指标聚合
 
@@ -465,6 +466,68 @@ docker compose ps
 其中 `/health/ready` 会作为容器健康检查；模型尚未加载完成时，容器仍然运行，
 但健康状态不会变为 healthy。不要把 `.env`、模型文件和本地数据库复制进镜像。
 
+## 规模与索引压测
+
+检索层能跑通不等于扛得住。`benchmark_index.py` 专门测**索引层**：同一批向量，
+换不同的 HNSW 参数，看 Recall@10 和延迟怎么变。
+
+为什么用合成向量而不是真实语料：只有合成数据能控制"结构有多难"。这里最关键的
+变量是 `--intrinsic-dim`（有效语义维度）——真实 embedding 的内在维度通常远低于
+向量维度，近邻分得开；而满维随机数据的近邻分数几乎相同，是 ANN 的最坏情况。
+**同一份代码，这两种数据的召回能差一倍**，所以报告必须带这个参数。
+
+```powershell
+python benchmark_index.py --sizes 5000,50000,200000 --intrinsic-dim 32  --label realistic
+python benchmark_index.py --sizes 5000,50000,200000 --intrinsic-dim 512 --label high_dim
+```
+
+### 实测结果（intrinsic_dim=32，dim=512，top_k=10）
+
+| 规模 | 配置 | Recall@10 | p50 | p95 | 入库速度 |
+| --- | --- | --- | --- | --- | --- |
+| 5 千 | `hnsw_default` | 1.000 | 1.21 ms | 3.53 ms | 6685 /s |
+| 5 千 | `hnsw_small_ef` | 0.785 | 1.12 ms | 1.41 ms | 7395 /s |
+| 5 千 | `exact_numpy` | 1.000 | 0.18 ms | 0.88 ms | — |
+| 5 万 | `hnsw_default` | 0.960 | 1.62 ms | 2.33 ms | 3223 /s |
+| 5 万 | `hnsw_small_ef` | 0.650 | 1.47 ms | 3.45 ms | 3446 /s |
+| 5 万 | `hnsw_high_recall` | 1.000 | 2.38 ms | 4.61 ms | 2683 /s |
+| 5 万 | `exact_numpy` | 1.000 | 3.48 ms | 4.18 ms | — |
+| 20 万 | `hnsw_default` | 0.950 | 1.54 ms | 3.21 ms | 2050 /s |
+| 20 万 | `hnsw_small_ef` | 0.455 | 1.24 ms | 1.62 ms | 2289 /s |
+| 20 万 | `hnsw_small_m` | 0.745 | 1.39 ms | 1.57 ms | 3409 /s |
+| 20 万 | `hnsw_high_recall` | 1.000 | 2.66 ms | 3.19 ms | 1556 /s |
+| 20 万 | `exact_numpy` | 1.000 | 11.59 ms | 12.04 ms | — |
+
+### 四条结论
+
+**1. ANN 的价值是"延迟不随规模涨"。** `hnsw_default` 从 5 千到 20 万，p50 一直在
+1.2~1.6 ms，而暴力检索从 0.18 ms 涨到 11.59 ms（约 64 倍，因为它严格 O(N)）。
+规模越大，索引越划算——这正是换向量库/调索引要解决的唯一问题。
+
+**2. 参数设错比不建索引更危险。** `hnsw_small_ef` 把 `search_ef` 设成等于 top_k，
+20 万规模时召回只有 0.455——**一半以上的正确答案根本没进候选池**。而它看起来
+更"快"（1.24 ms），只是因为它几乎没搜索。这类 bug 不会报错，只会让答案悄悄变差。
+
+**3. 漏召回是不可逆的。** 项目里 Reranker 只能对召回结果精排，进不了候选池的
+文档永远补不回来。所以 ANN 的 Recall 是整条链路的**上限**，必须比生成质量更早
+守住；`top_k × 3` 的候选扩召回也是同一个道理。
+
+**4. 20 万以内暴力检索仍然能打。** 11.59 ms、召回 100%，如果 QPS 要求不高
+（实测约 86 QPS）且内存够放下全部向量，它比调参更省事。真正该换 Milvus/FAISS
+的时机是：规模继续上升、或者需要多副本与并发写入。
+
+### 高维数据对照（intrinsic_dim=512）
+
+| 规模 | `hnsw_default` | `hnsw_small_ef` | `hnsw_high_recall` | `exact_numpy` |
+| --- | --- | --- | --- | --- |
+| 5 千 | 0.975 | 0.515 | 1.000 | 1.000 |
+| 5 万 | 0.625 | 0.245 | 0.920 | 1.000 |
+| 20 万 | 0.230 | 0.080 | 0.795 | 1.000 |
+
+同样是"20 万规模的 HNSW 默认参数"，低内在维度下召回 0.950，满维数据下只有
+0.230。**所以脱离数据分布谈召回没有意义**：看到 ANN 压测报告，第一个该问的是
+数据内在维度，而不是索引参数。
+
 ## 可观测性与成本看板
 
 三类指标，离线看日志文件，线上看 Prometheus。
@@ -569,3 +632,4 @@ LLM 调用具有总次数上限、指数退避和超时边界；Tool Agent 具�
 13. 实现跨会话长期记忆：规则抽取用户画像并注入 Prompt，按 user_id 严格隔离，支持内存 / Redis 后端与 TTL；只从用户话语抽取、绝不从模型回答抽取，避免把幻觉固化成记忆。
 14. 建立可观测性与成本看板：日志按 status 聚合 avg/P50/P95/max，统计 Verifier 结论分布、重规划率、降级率；token 与费用按请求累加（含流式 `include_usage`），并通过 Prometheus 兼容指标暴露。
 15. 上传接口幂等与并发安全：以「文件名 + SHA-256 内容哈希」判定重复上传直接返回 unchanged，不重复切分与向量化；按文件名的键控锁保证并发上传同一文件时不重复入库；老库升级通过轻量 schema 迁移补齐新列。
+16. 索引规模压测：在 5 千 / 5 万 / 20 万三档规模上对比 4 组 HNSW 参数与暴力检索，实测 ANN 延迟不随规模增长（p50 稳定 1.2~1.6 ms），量化出 `search_ef` 配错会让召回掉到 0.455，并给出"何时该从 Chroma 换到专用向量库"的判据。
