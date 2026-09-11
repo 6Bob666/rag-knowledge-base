@@ -1,6 +1,7 @@
 # services/llm_service.py
 from openai import OpenAI
 from config import settings
+from services.cost import record_response_usage
 
 # 从环境变量读取配置（安全最佳实践）
 API_KEY = settings.openai_api_key
@@ -76,6 +77,7 @@ def ask_llm(
         temperature=0.7,
         stream=False
     )
+    record_response_usage(response)
     return response.choices[0].message.content.strip()
 
 
@@ -93,8 +95,14 @@ def ask_llm_stream(
         messages=messages,
         temperature=0.7,
         stream=True,
+        # 流式响应默认不返回用量，需要显式开启，否则成本看板会漏掉生成这一块。
+        stream_options={"include_usage": True},
     )
     for chunk in response:
+        record_response_usage(chunk)
+        # 开启 include_usage 后，最后一个只带用量、不带 choices 的分片会出现在这里。
+        if not chunk.choices:
+            continue
         delta = chunk.choices[0].delta
         content = getattr(delta, "content", None)
         if content:
@@ -138,6 +146,7 @@ def rewrite_query(
         temperature=0.0,  # 低温度，保持稳定
         stream=False
     )
+    record_response_usage(response)
     rewritten = response.choices[0].message.content.strip()
     # 如果改写失败或为空，回退到原始问题
     return rewritten if rewritten else original_question

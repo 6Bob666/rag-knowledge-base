@@ -155,7 +155,23 @@ Verifier 回答"够不够"，Planner 回答"下一步干什么"。判定分四�
 
 这样知识库或模型版本变化时不会误用旧缓存。当前进程内缓存适合单进程；多实例部署应使用 Redis。
 
-## 9. 可靠性与安全
+## 9. 可观测性与成本
+
+三类信号：**耗时**（各阶段 avg/P50/P95/max，按 status 分组）、**规划**
+（Verifier 结论分布、重规划率、降级率）、**成本**（token 数与估算费用）。
+
+日志里刻意留了整条轨迹：`verify_trail=low_coverage>sufficient`、
+`plan_trail=retrieve>generate`。只留最后一次结论，事后就答不出"这次为什么
+多搜了一轮"。离线用 `analyze_rag_logs.py` 聚合，线上走 Prometheus 兼容指标。
+
+追问「为什么用 P95 而不是只看平均」：平均会被少数慢请求抹平，P95 才反映
+"最慢的那批用户体验"。看板的作用是发现异常，不是证明系统很快。
+
+追问「成本怎么算准」：按请求累加，查询改写、生成、Agent 循环里的每次调用都
+算在同一个 `request_id` 上；流式必须显式开 `include_usage` 才拿得到 token，
+否则会漏掉生成这一大块。单价可配置，明确定位成"发现异常"而不是账单。
+
+## 10. 可靠性与安全
 
 - `/health/live`：只检查进程是否存活；
 - `/health/ready`：检查 VectorStore、Reranker 是否完成初始化；
@@ -167,7 +183,7 @@ Verifier 回答"够不够"，Planner 回答"下一步干什么"。判定分四�
 - 输出：过滤空回答和敏感内容；
 - 日志：记录 request_id、阶段耗时和数量，不记录 API Key 与完整敏感文档。
 
-## 10. 评测体系
+## 11. 评测体系
 
 检索层使用人工标注的 `relevant_chunk_ids`：
 
@@ -198,7 +214,7 @@ hybrid + reranker        1.000     0.842        1.000  1.000
 
 Router 对比实验也说明：LLM Router 可能把知识库事实误判为常识问题。因此 Router 必须有规则兜底，不能只相信模型决策。
 
-## 11. 测试策略
+## 12. 测试策略
 
 测试不依赖真实模型：
 
@@ -215,11 +231,11 @@ Router 对比实验也说明：LLM Router 可能把知识库事实误判为常�
 152 passed, 1 warning
 ```
 
-## 12. 面试项目串讲模板
+## 13. 面试项目串讲模板
 
 > 我独立实现了一个基于 FastAPI 的中文 RAG 知识库问答系统。文档上传后会经过切分、Embedding 和 metadata 构造，向量保存到 Chroma，文档状态保存到 SQLite。检索阶段采用向量检索和 BM25 的混合召回，通过 RRF 融合排名，再使用本地 BGE Reranker 做精排和阈值过滤，最后将可靠 context 交给 DeepSeek 生成答案。系统支持多轮会话、查询改写、SSE 流式输出、Agent Router 和标准 Function Calling Tool Agent。工程上加入了依赖注入、Fake 测试、健康检查、Redis 会话、Docker、超时重试、限流、熔断和 Prometheus 兼容指标。评测方面使用人工标注 chunk_id 计算 Recall、Precision、MRR，并通过消融实验验证 Reranker 对排序质量和负样本拒答的贡献。
 
-## 13. 面试追问的回答顺序
+## 14. 面试追问的回答顺序
 
 遇到“效果不好怎么办”，按层定位：
 
@@ -241,7 +257,7 @@ Router 对比实验也说明：LLM Router 可能把知识库事实误判为常�
 效果门槛 + P95 延迟 + 错误率 + 成本 + 灰度和回滚能力
 ```
 
-## 14. 当前项目的边界
+## 15. 当前项目的边界
 
 这是一个适合展示 RAG 工程能力的个人 Demo，不应夸大为生产级平台。当前还可以继续增强：
 

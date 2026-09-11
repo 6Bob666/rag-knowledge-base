@@ -171,6 +171,8 @@ services/agent_state.py     Agent 状态与结构化路由决策
 services/agent_router.py    rules / LLM 两种 Router
 services/tool_agent.py      标准 Function Calling Tool Agent
 services/plan_verify.py     Planner / Verifier 状态机
+services/cost.py            token 用量与成本核算
+services/metrics_registry.py Prometheus 兼容指标
 services/mcp_client.py      MCP stdio 客户端
 services/mcp_tools.py       MCP 工具 → Function Calling 工具适配
 services/memory_store.py    长期记忆存储（内存/Redis）
@@ -455,6 +457,49 @@ docker compose ps
 其中 `/health/ready` 会作为容器健康检查；模型尚未加载完成时，容器仍然运行，
 但健康状态不会变为 healthy。不要把 `.env`、模型文件和本地数据库复制进镜像。
 
+## 可观测性与成本看板
+
+三类指标，离线看日志文件，线上看 Prometheus。
+
+**一次请求的日志字段：**
+
+```text
+request_id / conversation_id / status / candidate_count / context_count
+route_action / decision / attempt / max_attempts / search_count
+verify_verdict / verify_coverage / verify_trail / plan_action / plan_trail / degraded
+llm_calls / prompt_tokens / completion_tokens / cost_cny
+route_ms / rewrite_ms / retrieval_ms / rerank_ms / llm_ms / total_ms
+```
+
+`verify_trail=low_coverage>sufficient` 这类字段是刻意设计的：只留最后一次结论
+看不出"为什么重试过"，整条轨迹才能事后复盘。
+
+**离线聚合：**
+
+```powershell
+python analyze_rag_logs.py                       # 看默认 logs/app.log
+python analyze_rag_logs.py logs/app.log --json logs/dashboard.json
+```
+
+输出四块：各状态耗时（avg / P50 / P95 / max）、Agent 路由分布、Planner 结论与
+重规划率、token 与成本。用 P95 而不是只看平均，是因为平均值会把"少数很慢的
+请求"抹平掉。
+
+**线上指标（Prometheus 兼容）：**
+
+```text
+rag_http_requests_total / rag_http_request_duration_ms_p95
+rag_planner_verdict_total{verdict}     验证结论分布
+rag_planner_action_total{action}       最终动作分布
+rag_planner_replan_total{first_verdict} 重规划触发次数及首轮失败原因
+rag_planner_degraded_total             降级生成次数
+rag_llm_tokens_total{type} / rag_llm_calls_total / rag_llm_estimated_cost_cny_total
+```
+
+成本由 `services/cost.py` 统一核算：查询改写、最终生成、Agent 循环里的每次模型
+调用都会累加到同一个请求上（流式响应显式开启 `include_usage` 才能拿到 token）。
+单价从配置读取，只用于发现"哪个接口在偷偷烧钱"，不作为账单依据。
+
 ## 缓存设计
 
 当前为查询改写接入了可配置的进程内 TTL 缓存。缓存键包含原始问题、会话历史、
@@ -514,3 +559,4 @@ LLM 调用具有总次数上限、指数退避和超时边界；Tool Agent 具�
 11. 实现 MCP Server 与 stdio 客户端：知识库检索以 JSON-RPC 2.0 协议暴露为标准 MCP 工具，Agent 侧工具声明由 `tools/list` 动态生成，工具白名单直接取自声明，做到「Function Calling ↔ MCP」闭环。
 12. 实现 Planner / Verifier 检索状态机：验证结论分 empty / low_score / low_coverage / sufficient 四档，Planner 按失败类型选补救策略（回原问题或换关键词查询），三重边界防止死循环；并用 24 道标注题做验证器校准，量化出该组件在阈值 0.5 下无收益、阈值关闭时把负样本误放行从 4/4 降到 2/4。
 13. 实现跨会话长期记忆：规则抽取用户画像并注入 Prompt，按 user_id 严格隔离，支持内存 / Redis 后端与 TTL；只从用户话语抽取、绝不从模型回答抽取，避免把幻觉固化成记忆。
+14. 建立可观测性与成本看板：日志按 status 聚合 avg/P50/P95/max，统计 Verifier 结论分布、重规划率、降级率；token 与费用按请求累加（含流式 `include_usage`），并通过 Prometheus 兼容指标暴露。

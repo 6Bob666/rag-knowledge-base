@@ -27,6 +27,8 @@ from services.plan_verify import (
     RuleBasedVerifier,
     build_keyword_query,
 )
+from services.cost import estimate_cost_cny, start_usage_tracking, use_tracker
+from services.metrics_registry import metrics_registry
 from services.tool_agent import (
     KNOWLEDGE_SEARCH_TOOL_NAME,
     call_llm_tool,
@@ -144,6 +146,32 @@ def _agent_trace_fields(state: AgentState) -> dict:
     if state.degraded:
         fields["degraded"] = True
     return fields
+
+
+def _usage_trace_fields(tracker) -> dict:
+    """把一次请求的 token 与成本写进日志字段，供成本看板聚合。"""
+    if tracker is None:
+        return {}
+    usage = tracker.usage
+    if usage.total_tokens == 0 and tracker.llm_calls == 0:
+        return {}
+    return {
+        "llm_calls": tracker.llm_calls,
+        "prompt_tokens": usage.prompt_tokens,
+        "completion_tokens": usage.completion_tokens,
+        "cost_cny": estimate_cost_cny(usage),
+    }
+
+
+def _record_planner_metrics(state: AgentState) -> None:
+    """把规划轨迹写进 Prometheus 计数器（每次请求只记一次）。"""
+    if not state.verifications:
+        return
+    metrics_registry.record_planner_outcome(
+        verdicts=[item["verdict"] for item in state.verifications],
+        actions=[item["action"] for item in state.plan_steps],
+        degraded=state.degraded,
+    )
 
 
 def _journal_failure(
@@ -515,6 +543,7 @@ async def _prepare_agent_request(
         terminal_message: str | None = None,
         terminal_status: str | None = None,
     ) -> _AgentPrepResult:
+        _record_planner_metrics(state)
         return _AgentPrepResult(
             request_id=request_id,
             original_question=original_question,
@@ -834,6 +863,7 @@ async def _run_agent_answer(
     memory_service=None,
     verifier=None,
     planner=None,
+    usage_tracker=None,
 ) -> dict:
     """轻量 Agentic RAG：ROUTE/RETRIEVE/VERIFY/REPLAN + 非流式生成。"""
     prep = await _prepare_agent_request(
@@ -866,6 +896,7 @@ async def _run_agent_answer(
         context_count=len(prep.contexts),
     )
     state.decision = "success"
+    usage_fields = _usage_trace_fields(usage_tracker)
     prep.timings["total_ms"] = round(
         (time.perf_counter() - prep.total_start) * 1000, 1
     )
@@ -894,7 +925,7 @@ async def _run_agent_answer(
             len(prep.candidates),
             len(prep.contexts),
             prep.timings,
-            _agent_trace_fields(state),
+            {**_agent_trace_fields(state), **usage_fields},
         ),
     )
     return {
@@ -920,6 +951,7 @@ async def ask_question(
     planner=Depends(get_planner),
 ):
     _check_rate_limit(http_request)
+    usage_tracker = start_usage_tracking()
     return await _run_agent_answer(
         request=request,
         store=store,
@@ -931,6 +963,7 @@ async def ask_question(
         memory_service=memory_service,
         verifier=verifier,
         planner=planner,
+        usage_tracker=usage_tracker,
     )
 
 
@@ -951,6 +984,7 @@ async def ask_question_stream(
     planner=Depends(get_planner),
 ):
     _check_rate_limit(http_request)
+    usage_tracker = start_usage_tracking()
     prep = await _prepare_agent_request(
         request=request,
         store=store,
@@ -993,6 +1027,8 @@ async def ask_question_stream(
     context_text = "\n".join(item["text"] for item in prep.contexts)
 
     def generate():
+        # 生成器在另一个执行上下文里运行，要显式接回同一个用量累加器。
+        use_tracker(usage_tracker)
         llm_start = time.perf_counter()
         yield sse_event(
             "start",
@@ -1047,7 +1083,10 @@ async def ask_question_stream(
                     len(prep.candidates),
                     len(prep.contexts),
                     prep.timings,
-                    _agent_trace_fields(state),
+                    {
+                        **_agent_trace_fields(state),
+                        **_usage_trace_fields(usage_tracker),
+                    },
                 ),
             )
             yield sse_event(
@@ -1154,6 +1193,7 @@ async def ask_tool_agent(
 ):
     """标准 Function Calling Agent：LLM 自主决定是否调用检索工具。"""
     _check_rate_limit(http_request)
+    usage_tracker = start_usage_tracking()
     request_id = new_request_id()
     timings: dict = {}
     total_start = time.perf_counter()
@@ -1336,6 +1376,7 @@ async def ask_tool_agent(
             {
                 "tool_calls": result.tool_call_count,
                 "termination": result.termination,
+                **_usage_trace_fields(usage_tracker),
             },
         ),
     )

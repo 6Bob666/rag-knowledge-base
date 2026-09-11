@@ -19,6 +19,7 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 from services.llm_service import MODEL_NAME, client
+from services.cost import record_response_usage
 
 
 KNOWLEDGE_SEARCH_TOOL_NAME = "search_knowledge_base"
@@ -67,6 +68,7 @@ def call_llm_tool(
         temperature=0.0,
         stream=False,
     )
+    record_response_usage(response)
     message = response.choices[0].message
     tool_calls = []
     for call in message.tool_calls or []:

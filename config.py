@@ -65,6 +65,11 @@ class Settings(BaseSettings):
     planner_enabled: bool = True
     verifier_min_coverage: float = 0.5
 
+    # 成本估算单价（元 / 百万 token）。只用于看板量级估算：
+    # 不同模型和缓存命中价格差别很大，不能当账单用。
+    llm_price_input_per_million: float = 2.0
+    llm_price_output_per_million: float = 8.0
+
     # 稳定性保护；限流默认关闭，避免单机开发和测试受全局状态影响。
     rate_limit_enabled: bool = False
     rate_limit_requests: int = 60
