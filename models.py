@@ -14,6 +14,10 @@ class Document(Base):
     filename: Mapped[str] = mapped_column(String(255), index=True)
     file_size: Mapped[int] = mapped_column(Integer, default=0)
     chunk_count: Mapped[int] = mapped_column(Integer, default=0)
+    # 内容哈希：同一份内容重复上传时直接跳过，不重复切分和向量化。
+    content_hash: Mapped[str | None] = mapped_column(
+        String(64), nullable=True, index=True
+    )
     status: Mapped[str] = mapped_column(String(20), default="processing", index=True)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

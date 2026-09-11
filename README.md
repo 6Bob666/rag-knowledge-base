@@ -80,12 +80,19 @@ Chroma：保存 chunk 向量、文本和来源元数据
 
 ```text
 上传文件
+  → 计算内容哈希（SHA-256）：同一份内容重复上传直接返回 unchanged
+  → 按文件名的锁串行化：并发上传同一文件不会重复入库
   → 文本切分（chunk_size / chunk_overlap）
   → 生成 chunk_id 和 metadata
   → Embedding 向量化
   → 写入 ChromaDB
   → SQLite 记录文档状态
 ```
+
+幂等的判据是「文件名 + 内容哈希」，不是文件名——文件名可以重复，内容才是同一份
+东西。内容变了才走替换流程，并且**先写新版本、成功后再删旧版本**，保证替换过程中
+旧版本一直可用。老库升级用 `ensure_schema()` 补 `content_hash` 列
+（`create_all` 只建表不加列，这一步不做，升级后第一次上传就会 500）。
 
 ### 问答检索
 
@@ -173,6 +180,7 @@ services/tool_agent.py      标准 Function Calling Tool Agent
 services/plan_verify.py     Planner / Verifier 状态机
 services/cost.py            token 用量与成本核算
 services/metrics_registry.py Prometheus 兼容指标
+services/upload_guard.py    上传幂等（内容哈希）与按键并发锁
 services/mcp_client.py      MCP stdio 客户端
 services/mcp_tools.py       MCP 工具 → Function Calling 工具适配
 services/memory_store.py    长期记忆存储（内存/Redis）
@@ -560,3 +568,4 @@ LLM 调用具有总次数上限、指数退避和超时边界；Tool Agent 具�
 12. 实现 Planner / Verifier 检索状态机：验证结论分 empty / low_score / low_coverage / sufficient 四档，Planner 按失败类型选补救策略（回原问题或换关键词查询），三重边界防止死循环；并用 24 道标注题做验证器校准，量化出该组件在阈值 0.5 下无收益、阈值关闭时把负样本误放行从 4/4 降到 2/4。
 13. 实现跨会话长期记忆：规则抽取用户画像并注入 Prompt，按 user_id 严格隔离，支持内存 / Redis 后端与 TTL；只从用户话语抽取、绝不从模型回答抽取，避免把幻觉固化成记忆。
 14. 建立可观测性与成本看板：日志按 status 聚合 avg/P50/P95/max，统计 Verifier 结论分布、重规划率、降级率；token 与费用按请求累加（含流式 `include_usage`），并通过 Prometheus 兼容指标暴露。
+15. 上传接口幂等与并发安全：以「文件名 + SHA-256 内容哈希」判定重复上传直接返回 unchanged，不重复切分与向量化；按文件名的键控锁保证并发上传同一文件时不重复入库；老库升级通过轻量 schema 迁移补齐新列。

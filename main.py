@@ -4,11 +4,14 @@ from fastapi import FastAPI, Request
 from fastapi.concurrency import run_in_threadpool
 from logging_config import logger
 from routers import documents, chat, health, metrics
-from database import Base, engine
+from database import Base, engine, ensure_schema
 from models import Document
 from services.dependencies import get_store
 
 Base.metadata.create_all(bind=engine)
+# 老库缺的新列在这里补齐，否则升级后第一次上传就会 500。
+for _statement in ensure_schema(engine):
+    print(f"[migration] {_statement}")
 
 
 @asynccontextmanager

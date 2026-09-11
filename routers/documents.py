@@ -9,6 +9,7 @@ from database import get_db
 from models import Document
 from services.dependencies import get_store
 from services.text_splitter import split_text
+from services.upload_guard import compute_content_hash, upload_lock
 from config import settings
 from logging_config import logger
 
@@ -22,6 +23,47 @@ async def upload_document(file: UploadFile = File(...), db: Session = Depends(ge
     if not file.filename:
         raise HTTPException(status_code=400, detail="文件名不能为空")
     content = await file.read()
+    content_hash = compute_content_hash(content)
+
+    # 临界区按文件名串行：并发上传同一个文件时，避免两次"先查后写"交错，
+    # 导致同一份内容被重复入库、旧版本被误删。
+    with upload_lock.acquire(file.filename):
+        return await _index_document(
+            file=file,
+            content=content,
+            content_hash=content_hash,
+            db=db,
+            store=store,
+        )
+
+
+async def _index_document(
+    *,
+    file: UploadFile,
+    content: bytes,
+    content_hash: str,
+    db: Session,
+    store: "VectorStore",
+):
+    """幂等入库：内容没变直接返回，内容变了才替换旧版本。"""
+    existing_same_content = db.query(Document).filter(
+        Document.filename == file.filename,
+        Document.content_hash == content_hash,
+        Document.status == "indexed",
+    ).first()
+    if existing_same_content is not None:
+        logger.info(
+            "文件内容未变化，跳过重复入库 filename=%s document_id=%s",
+            file.filename,
+            existing_same_content.document_id,
+        )
+        return {
+            "document_id": existing_same_content.document_id,
+            "filename": file.filename,
+            "chunk_count": existing_same_content.chunk_count,
+            "status": "unchanged",
+        }
+
     document_id = str(uuid.uuid4())
 
     # 先保留旧版本，只有新版本成功后才清理它们。
@@ -34,6 +76,7 @@ async def upload_document(file: UploadFile = File(...), db: Session = Depends(ge
         document_id=document_id,
         filename=file.filename,
         file_size=len(content),
+        content_hash=content_hash,
         status="processing",
     )
     db.add(document)

@@ -50,9 +50,12 @@ def client():
     app = FastAPI()
     app.include_router(router, prefix="/documents")
     app.dependency_overrides[get_db] = override_get_db
-    app.dependency_overrides[get_store] = lambda: FakeStore()
+    # 所有请求共用同一个 FakeStore，才能断言"幂等命中时没有再写向量库"。
+    fake_store = FakeStore()
+    app.dependency_overrides[get_store] = lambda: fake_store
 
     with TestClient(app) as test_client:
+        test_client.fake_store = fake_store
         yield test_client
 
 
@@ -89,3 +92,53 @@ def test_delete_document(client):
 
     assert response.status_code == 200
     assert response.json()["document_id"] == document_id
+
+
+def upload(client, filename: str, text: str):
+    return client.post(
+        "/documents/upload",
+        files={"file": (filename, text.encode("utf-8"), "text/plain")},
+    )
+
+
+def test_uploading_same_content_twice_is_idempotent(client):
+    """同一份内容重复上传：不重复切分，也不产生新文档。"""
+    first = upload(client, "same.txt", "这是同一份内容。")
+    second = upload(client, "same.txt", "这是同一份内容。")
+
+    assert first.json()["status"] == "indexed"
+    assert second.json()["status"] == "unchanged"
+    assert second.json()["document_id"] == first.json()["document_id"]
+    assert second.json()["chunk_count"] == first.json()["chunk_count"]
+    assert len(client.get("/documents").json()["documents"]) == 1
+
+
+def test_uploading_changed_content_replaces_old_version(client):
+    first = upload(client, "doc.txt", "第一版内容。")
+    second = upload(client, "doc.txt", "第二版内容，已经改过。")
+
+    assert second.json()["status"] == "indexed"
+    assert second.json()["document_id"] != first.json()["document_id"]
+
+    documents = client.get("/documents").json()["documents"]
+    current_ids = [item["document_id"] for item in documents]
+    assert current_ids == [second.json()["document_id"]]
+
+
+def test_same_content_under_different_name_is_indexed_separately(client):
+    """判据是内容 + 文件名：换个名字上传仍然视为新文档。"""
+    first = upload(client, "a.txt", "共享内容。")
+    second = upload(client, "b.txt", "共享内容。")
+
+    assert second.json()["status"] == "indexed"
+    assert len(client.get("/documents").json()["documents"]) == 2
+
+
+def test_unchanged_upload_does_not_call_vector_store(client):
+    """幂等命中时不能再去写向量库，否则等于白烧一次 embedding。"""
+    upload(client, "same.txt", "内容不变。")
+    client.fake_store.added_texts.clear()
+
+    upload(client, "same.txt", "内容不变。")
+
+    assert client.fake_store.added_texts == []
