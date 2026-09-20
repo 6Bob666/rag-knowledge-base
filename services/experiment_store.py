@@ -53,9 +53,16 @@ def load_experiments(output_dir: str | Path = DEFAULT_RESULTS_DIR) -> list[dict]
     reports = []
     for file in sorted(output_path.glob("*.json")):
         try:
-            reports.append(json.loads(file.read_text(encoding="utf-8")))
+            report = json.loads(file.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
             continue
+        # 详情文件通常是 list[dict]，不能参与实验汇总对比。
+        if not isinstance(report, dict):
+            continue
+        if not isinstance(report.get("summary"), dict):
+            continue
+        report.setdefault("experiment_id", file.stem)
+        reports.append(report)
     return reports
 
 
@@ -72,12 +79,14 @@ def format_comparison(
     """把多份实验报告格式化成可读的对比表。"""
     header = (
         "experiment_id | top_k | threshold | recall_at_k | precision_at_k | "
-        "mrr | rejection_rate | avg_total_ms | max_total_ms"
+        "mrr | rejection_rate | avg_total_ms | p95_total_ms | max_total_ms"
     )
     lines = [header]
     for report in reports:
         metadata = report.get("metadata") or {}
         summary = get_strategy_summary(report, strategy)
+        if not summary:
+            continue
         values = [
             report.get("experiment_id", "-"),
             str(metadata.get("top_k", "-")),
@@ -87,6 +96,14 @@ def format_comparison(
             str(summary.get("mrr", "-")),
             str(summary.get("rejection_rate", "-")),
             str(summary.get("avg_total_ms", "-")),
+            str(
+                summary.get(
+                    "p95_total_ms",
+                    (report.get("timing_summary") or {})
+                    .get("total_ms", {})
+                    .get("p95_ms", "-"),
+                )
+            ),
             str(summary.get("max_total_ms", "-")),
         ]
         lines.append(" | ".join(values))

@@ -3,7 +3,14 @@ from services.eval_timings import summarize_timing_values, summarize_timings
 
 def test_summarize_timing_values_on_empty_input():
     summary = summarize_timing_values([])
-    assert summary == {"count": 0, "avg_ms": 0.0, "max_ms": 0.0}
+    assert summary == {
+        "count": 0,
+        "avg_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "p99_ms": 0.0,
+        "max_ms": 0.0,
+    }
 
 
 def test_summarize_timing_values_computes_avg_and_max():

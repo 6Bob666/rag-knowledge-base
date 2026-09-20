@@ -13,6 +13,9 @@ chroma_data
 uploads
 logs
 experiment_results
+data
+requirements-eval.txt
+run_public_eval.ps1
 *.db
 *.sqlite
 *.docx

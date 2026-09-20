@@ -1,0 +1,13 @@
+{
+  "dataset": "mteb/T2Retrieval",
+  "dataset_revision": "official MTEB T2Retrieval dev",
+  "license": "Apache-2.0",
+  "query_count": 500,
+  "corpus_count": 5000,
+  "positive_document_count": 2608,
+  "created_at": "2026-09-19T12:53:04.806738+00:00",
+  "files": {
+    "corpus": "corpus.jsonl",
+    "evaluation": "evaluation_dataset.json"
+  }
+}

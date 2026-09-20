@@ -266,7 +266,7 @@ Router 对比实验也说明：LLM Router 可能把知识库事实误判为常�
 最近一次本地全量测试：
 
 ```text
-152 passed, 1 warning
+240 passed, 2 warnings
 ```
 
 ## 14. 面试项目串讲模板
@@ -303,4 +303,16 @@ Router 对比实验也说明：LLM Router 可能把知识库事实误判为常�
 - 对 Redis 限流做多实例原子实现；
 - 将文档和会话元数据迁移到 PostgreSQL；
 - 增加鉴权、租户隔离和更严格的引用校验；
-- 在独立环境重新运行固定 RAG 与 Tool Agent 的 24 题端到端对比实验。
+- 公开数据实验目前使用 MTEB T2Retrieval 的 5000 条 corpus / 500 道 dev query；
+  仍需在更大 GPU 或更高效的 CrossEncoder 推理后端上继续做全量性能优化。
+
+当前公开数据实验（top_k=3，500 道题）结果：
+
+```text
+Hybrid                  Recall@3=0.966  Precision@3=0.781  MRR=0.950
+Hybrid + Reranker(0.0)  Recall@3=0.966  Precision@3=0.807  MRR=0.960
+Hybrid + Reranker(0.5)  Recall@3=0.880  Precision@3=0.873  MRR=0.879
+```
+
+这组结果体现的是可解释的效果权衡：Reranker 改善排序，阈值过滤提高结果纯度，
+但过高阈值会损失召回；最终参数必须结合效果、拒答策略和 P95 延迟选择。

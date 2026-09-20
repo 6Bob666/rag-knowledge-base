@@ -42,6 +42,22 @@ def test_get_strategy_summary_falls_back_to_empty():
     assert get_strategy_summary({}, "baseline") == {}
 
 
+def test_load_experiments_skips_detail_arrays(tmp_path: Path):
+    (tmp_path / "details.json").write_text(
+        '[{"question": "q", "baseline": {}}]',
+        encoding="utf-8",
+    )
+    (tmp_path / "report.json").write_text(
+        '{"metadata": {}, "summary": {"baseline": {}}}',
+        encoding="utf-8",
+    )
+
+    reports = load_experiments(tmp_path)
+
+    assert len(reports) == 1
+    assert reports[0]["summary"] == {"baseline": {}}
+
+
 def test_format_comparison_outputs_header_and_rows():
     reports = [
         {
@@ -54,6 +70,7 @@ def test_format_comparison_outputs_header_and_rows():
                     "mrr": 1.0,
                     "rejection_rate": 0.0,
                     "avg_total_ms": 300.0,
+                    "p95_total_ms": 350.0,
                     "max_total_ms": 400.0,
                 }
             },
@@ -68,6 +85,7 @@ def test_format_comparison_outputs_header_and_rows():
                     "mrr": 0.94,
                     "rejection_rate": 0.0,
                     "avg_total_ms": 100.0,
+                    "p95_total_ms": 125.0,
                     "max_total_ms": 150.0,
                 }
             },
@@ -79,5 +97,5 @@ def test_format_comparison_outputs_header_and_rows():
     assert table.startswith(
         "experiment_id | top_k | threshold | recall_at_k"
     )
-    assert "exp-a | 3 | 0.5 | 1.0 | 0.67 | 1.0 | 0.0 | 300.0 | 400.0" in table
-    assert "exp-b | 3 | 0.0 | 1.0 | 0.52 | 0.94 | 0.0 | 100.0 | 150.0" in table
+    assert "exp-a | 3 | 0.5 | 1.0 | 0.67 | 1.0 | 0.0 | 300.0 | 350.0 | 400.0" in table
+    assert "exp-b | 3 | 0.0 | 1.0 | 0.52 | 0.94 | 0.0 | 100.0 | 125.0 | 150.0" in table

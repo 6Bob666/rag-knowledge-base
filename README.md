@@ -3,7 +3,7 @@
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-async-009688)
 ![Chroma](https://img.shields.io/badge/Vector_DB-ChromaDB-4B32C3)
-![Tests](https://img.shields.io/badge/tests-152_passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-240_passed-brightgreen)
 
 一个基于 FastAPI 的中文知识库问答系统，支持文档上传、自动切分、向量化入库、混合检索、重排序、LLM 生成回答，并配套完整的离线评测体系。
 
@@ -197,8 +197,14 @@ evaluate_agent_router.py    Agent Router（rules vs LLM）对照实验
 evaluate_generation.py      端到端生成层评测
 evaluate_verifier.py        检索验证器校准（与人工标注对比）
 benchmark_index.py         向量索引规模压测（HNSW 参数 vs 召回/延迟）
+prepare_t2_retrieval.py     下载并切分公开 T2Retrieval 数据
+import_t2_corpus.py         将公开语料导入独立 Chroma collection
 evaluation_dataset.json     人工标注评测集
 analyze_rag_logs.py         RAG/Agent 日志指标聚合
+
+data/t2retrieval/           公开数据实验的本地切片与 manifest
+requirements-eval.txt       公开数据准备所需的可选依赖
+run_public_eval.ps1         一键运行公开数据评测
 
 tests/                      单元测试与接口测试
 ```
@@ -261,6 +267,72 @@ Answer Relevance = 1.000
 ```
 
 注意：当前知识库只有 77 个 chunk，题目与知识库内容高度相关，因此 Recall 偏高。这些数字用于验证评测链路，不代表真实业务表现。
+
+### 公开数据检索实验
+
+为避免只在自建小知识库上评测，项目还接入了 MTEB 的公开中文检索数据集
+`mteb/T2Retrieval`。当前本地实验切片包含 5000 条 corpus、500 条带 qrels 的
+dev queries，并保留原始 corpus ID；Chroma 使用独立 collection
+`t2_kb_docs`，不会污染本地知识库。
+
+准备数据并导入 Chroma：
+
+```powershell
+\.venv311\Scripts\python.exe prepare_t2_retrieval.py `
+  --output-dir data\t2retrieval --query-count 500 --corpus-size 5000
+\.venv311\Scripts\python.exe import_t2_corpus.py `
+  --corpus data\t2retrieval\corpus.jsonl --collection t2_kb_docs
+```
+
+使用同一批 30 道题对比 Hybrid 与 Reranker：
+
+```powershell
+\.venv311\Scripts\python.exe evaluate_retrieval.py `
+  --dataset data\t2retrieval\evaluation_dataset.json `
+  --collection t2_kb_docs --top-k 3 --threshold 0.0 --limit 30
+```
+
+30 题冒烟实验结果如下，报告保存在 `experiment_results/`：
+
+```text
+threshold=0.0: Hybrid Recall@3=0.900, Precision@3=0.733, MRR=0.867
+               Reranker Recall@3=0.900, Precision@3=0.778, MRR=0.900
+threshold=0.5: Hybrid Recall@3=0.900, Precision@3=0.733, MRR=0.867
+               Reranker Recall@3=0.833, Precision@3=0.811, MRR=0.833
+```
+
+完整 500 题评测命令：
+
+```powershell
+\.venv311\Scripts\python.exe evaluate_retrieval.py `
+  --dataset data\t2retrieval\evaluation_dataset.json `
+  --collection t2_kb_docs --top-k 3 --threshold 0.5 `
+  --rerank-batch-size 4 --predict-batch-size 4 --limit 500
+```
+
+也可以通过统一实验入口保存带配置快照的报告：
+
+```powershell
+\.venv311\Scripts\python.exe experiment_runner.py run `
+  --name t2retrieval-500-threshold-05 `
+  --dataset data\t2retrieval\evaluation_dataset.json `
+  --collection t2_kb_docs --threshold 0.5 --limit 500 `
+  --rerank-batch-size 4 --predict-batch-size 4
+```
+
+500 题 GPU 结果：
+
+```text
+strategy              Recall@3   Precision@3   MRR
+hybrid                  0.966        0.781     0.950
+hybrid + reranker (0.0) 0.966        0.807     0.960
+hybrid + reranker (0.5) 0.880        0.873     0.879
+```
+
+批量 Reranker 实际耗时平均 1218.9ms、P95 2728.2ms；按题分摊后的总耗时 P95
+约 695.8ms。上表第二行是阈值 0.0，第三行是阈值 0.5。结论：Reranker 本身
+改善排序；阈值 0.5 进一步提高 Precision，但牺牲了 Recall 和 MRR，因此参数需要
+结合固定评测集、拒答策略和 P95 延迟共同选择，而不能只看平均值。
 
 ## Function Calling Tool Agent
 
@@ -401,9 +473,16 @@ Prompt，在生成成功后从用户问题中抽取新的记忆：
 安装依赖：
 
 ```powershell
+# CPU 环境：
 .\.venv311\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+# 或 GPU 环境（RTX 40 系列示例）：
+.\.venv311\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cu126
 .\.venv311\Scripts\python.exe -m pip install -r requirements.txt
+# 只有运行公开数据实验时才需要
+.\.venv311\Scripts\python.exe -m pip install -r requirements-eval.txt
 ```
+
+CPU 和 GPU 的 PyTorch 命令二选一，不要连续执行；GPU 评测会自动使用 CUDA 和 FP16。
 
 启动服务：
 
@@ -415,6 +494,20 @@ Prompt，在生成成功后从用户问题中抽取新的记忆：
 
 ```powershell
 .\.venv311\Scripts\python.exe -m pytest -q tests
+```
+
+公开数据实验的一键入口：
+
+```powershell
+.\run_public_eval.ps1 -Threshold 0.5 -Limit 500
+```
+
+脚本会固定使用 `data/t2retrieval/evaluation_dataset.json`、`t2_kb_docs` collection、
+`top_k=3` 和 GPU 友好的批处理参数，并将带配置快照的报告保存到
+`experiment_results/`。切换阈值可以直接复现实验对比：
+
+```powershell
+.\run_public_eval.ps1 -Threshold 0.0 -Limit 500 -Name t2retrieval-500-threshold-00
 ```
 
 健康检查：
@@ -446,8 +539,8 @@ CI 不调用真实 LLM、不需要 API Key，也不加载本地模型；真实�
 
 ## Docker 部署
 
-项目提供了 [Dockerfile](D:/software/Pycharm/Project/test1/fastApiProject/Dockerfile)
-和 [docker-compose.yml](D:/software/Pycharm/Project/test1/fastApiProject/docker-compose.yml)。
+项目提供了 [Dockerfile](Dockerfile)
+和 [docker-compose.yml](docker-compose.yml)。
 镜像只包含代码和 Python 依赖，Embedding/Reranker 模型通过只读挂载提供，
 SQLite、Chroma、上传文件和日志通过 volume 持久化。
 
@@ -456,6 +549,10 @@ SQLite、Chroma、上传文件和日志通过 volume 持久化。
 ```powershell
 docker compose up --build
 ```
+
+Compose 使用 `rag_data` 命名卷持久化 SQLite，使用 `redis_data` 持久化 Redis；
+首次从 GitHub 克隆时不需要本地提前创建 `knowledge_base.db`。模型仍需按只读方式
+放在 `model/` 目录，或调整 Compose 中的模型挂载路径。
 
 查看容器状态：
 

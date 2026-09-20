@@ -1,0 +1,4 @@
+# Optional dependencies for public-data retrieval experiments.
+# Production API and CI only need requirements.txt.
+pyarrow>=15.0
+huggingface_hub>=0.24

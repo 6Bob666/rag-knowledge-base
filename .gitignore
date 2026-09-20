@@ -17,6 +17,7 @@ __pycache__/
 # 本地模型与知识库数据
 model/
 chroma_data/
+chroma_db/
 uploads/
 logs/
 

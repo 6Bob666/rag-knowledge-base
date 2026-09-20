@@ -1,0 +1,1082 @@
+[
+  {
+    "question": "蜂巢取快递验证码摁错怎么办",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:219110",
+        "t2:159474",
+        "t2:159475"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 11673.0,
+        "total_ms": 11673.0
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:219110",
+        "t2:159474",
+        "t2:159475"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 115.3,
+        "rerank_ms": 612.0,
+        "total_ms": 727.3
+      }
+    }
+  },
+  {
+    "question": "生产过后怎么还有一层肚子",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:544453",
+        "t2:221806",
+        "t2:359777"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 13.2,
+        "total_ms": 13.2
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:544453",
+        "t2:221806",
+        "t2:359778"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 14.4,
+        "rerank_ms": 182.1,
+        "total_ms": 196.5
+      }
+    }
+  },
+  {
+    "question": "腾讯体育美娜姐姐简介",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:235984",
+        "t2:229762",
+        "t2:727867"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 12.1,
+        "total_ms": 12.1
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:235984",
+        "t2:229762",
+        "t2:412586"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 16.2,
+        "rerank_ms": 208.2,
+        "total_ms": 224.4
+      }
+    }
+  },
+  {
+    "question": "看肝癌北京哪个医院好",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:160",
+        "t2:23510",
+        "t2:242810"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 19.8,
+        "total_ms": 19.8
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:160",
+        "t2:242810",
+        "t2:521"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 20.2,
+        "rerank_ms": 307.6,
+        "total_ms": 327.8
+      }
+    }
+  },
+  {
+    "question": "嗨吃家酸辣粉怎么泡",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:8452",
+        "t2:380480",
+        "t2:289262"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 13.6,
+        "total_ms": 13.6
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:289262",
+        "t2:8452",
+        "t2:380480"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 14.9,
+        "rerank_ms": 178.4,
+        "total_ms": 193.3
+      }
+    }
+  },
+  {
+    "question": "哪些小区读和平街小学",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:500401",
+        "t2:196707",
+        "t2:318292"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 14.2,
+        "total_ms": 14.2
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:500401",
+        "t2:196707",
+        "t2:318292"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 15.5,
+        "rerank_ms": 314.0,
+        "total_ms": 329.5
+      }
+    }
+  },
+  {
+    "question": "博人不是鸣人的亲生儿子是谣言吗",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:132891",
+        "t2:394566",
+        "t2:464035"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 21.6,
+        "total_ms": 21.6
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:394566",
+        "t2:464035",
+        "t2:132891"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 21.0,
+        "rerank_ms": 456.6,
+        "total_ms": 477.6
+      }
+    }
+  },
+  {
+    "question": "高中会被录取",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:379905",
+        "t2:59951",
+        "t2:24154"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 13.6,
+        "total_ms": 13.6
+      }
+    },
+    "reranked": {
+      "recall_at_k": 0,
+      "precision_at_k": 0.0,
+      "rr": 0.0,
+      "returned_chunk_ids": [
+        "t2:258988",
+        "t2:258987",
+        "t2:208724"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 13.5,
+        "rerank_ms": 243.5,
+        "total_ms": 257.0
+      }
+    }
+  },
+  {
+    "question": "58兼职是真的可以赚钱吗",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 0.5,
+      "returned_chunk_ids": [
+        "t2:50495",
+        "t2:718168",
+        "t2:560343"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 16.6,
+        "total_ms": 16.6
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:553212",
+        "t2:44765",
+        "t2:50495"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 21.6,
+        "rerank_ms": 273.1,
+        "total_ms": 294.7
+      }
+    }
+  },
+  {
+    "question": "中国工商银行卡忘记密码可以在手机上改吗",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:80588",
+        "t2:664751",
+        "t2:402763"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 18.4,
+        "total_ms": 18.4
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:80588",
+        "t2:402763",
+        "t2:541460"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 19.4,
+        "rerank_ms": 455.1,
+        "total_ms": 474.5
+      }
+    }
+  },
+  {
+    "question": "202|春帘怎么样写",
+    "baseline": {
+      "recall_at_k": 0,
+      "precision_at_k": 0.0,
+      "rr": 0.0,
+      "returned_chunk_ids": [
+        "t2:288686",
+        "t2:54621",
+        "t2:432256"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 24.6,
+        "total_ms": 24.6
+      }
+    },
+    "reranked": {
+      "recall_at_k": 0,
+      "precision_at_k": 0.0,
+      "rr": 0.0,
+      "returned_chunk_ids": [
+        "t2:137339",
+        "t2:288686",
+        "t2:54621"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 16.5,
+        "rerank_ms": 766.8,
+        "total_ms": 783.3
+      }
+    }
+  },
+  {
+    "question": "党史教育中如何传承革命军队优良传统论文",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:99017",
+        "t2:308347",
+        "t2:286763"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 19.2,
+        "total_ms": 19.2
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:99017",
+        "t2:107641",
+        "t2:287927"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 19.6,
+        "rerank_ms": 2694.1,
+        "total_ms": 2713.7
+      }
+    }
+  },
+  {
+    "question": "奇门遁甲测事情真假",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:302162",
+        "t2:15663",
+        "t2:500465"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 11.2,
+        "total_ms": 11.2
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:302162",
+        "t2:15663",
+        "t2:696136"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 15.7,
+        "rerank_ms": 642.8,
+        "total_ms": 658.5
+      }
+    }
+  },
+  {
+    "question": "11款朗逸空调滤芯",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:262254",
+        "t2:541279",
+        "t2:264918"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 10.6,
+        "total_ms": 10.6
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:264918",
+        "t2:262254",
+        "t2:541279"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 11.3,
+        "rerank_ms": 230.0,
+        "total_ms": 241.3
+      }
+    }
+  },
+  {
+    "question": "中央纪委有几位副书记",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:193394",
+        "t2:467549",
+        "t2:300625"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 13.7,
+        "total_ms": 13.7
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:40688",
+        "t2:193394",
+        "t2:537043"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 15.3,
+        "rerank_ms": 5154.7,
+        "total_ms": 5170.0
+      }
+    }
+  },
+  {
+    "question": "面相看男人是否专一",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:15666",
+        "t2:645874",
+        "t2:758416"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 14.5,
+        "total_ms": 14.5
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:645874",
+        "t2:758416",
+        "t2:15666"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 12.9,
+        "rerank_ms": 261.7,
+        "total_ms": 274.6
+      }
+    }
+  },
+  {
+    "question": "淘宝申请发票超时了怎么办",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:535170",
+        "t2:344921",
+        "t2:54495"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 15.8,
+        "total_ms": 15.8
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:535170",
+        "t2:344921",
+        "t2:329469"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 13.7,
+        "rerank_ms": 361.6,
+        "total_ms": 375.3
+      }
+    }
+  },
+  {
+    "question": "窦靖童周冬雨为啥分手",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:739399",
+        "t2:188513",
+        "t2:434696"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 14.5,
+        "total_ms": 14.5
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:188513",
+        "t2:739399",
+        "t2:434696"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 13.7,
+        "rerank_ms": 246.1,
+        "total_ms": 259.8
+      }
+    }
+  },
+  {
+    "question": "为什么我抖音没搞笑配音功能",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:467945",
+        "t2:310631",
+        "t2:297076"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 16.6,
+        "total_ms": 16.6
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:467945",
+        "t2:286083",
+        "t2:297076"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 15.0,
+        "rerank_ms": 382.9,
+        "total_ms": 397.9
+      }
+    }
+  },
+  {
+    "question": "竹叶青是属一种药材吗",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:665279",
+        "t2:559153",
+        "t2:749671"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 16.9,
+        "total_ms": 16.9
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:665279",
+        "t2:749671",
+        "t2:390891"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 16.3,
+        "rerank_ms": 158.6,
+        "total_ms": 174.9
+      }
+    }
+  },
+  {
+    "question": "雨什么时候念四声",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:15675",
+        "t2:721546",
+        "t2:657963"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 13.3,
+        "total_ms": 13.3
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:15675",
+        "t2:721546",
+        "t2:114538"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 15.0,
+        "rerank_ms": 265.1,
+        "total_ms": 280.1
+      }
+    }
+  },
+  {
+    "question": "毕加索和齐白石故事",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:713187",
+        "t2:544160",
+        "t2:245692"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 13.5,
+        "total_ms": 13.5
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:713187",
+        "t2:593398",
+        "t2:245692"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 18.0,
+        "rerank_ms": 83491.9,
+        "total_ms": 83509.9
+      }
+    }
+  },
+  {
+    "question": "宫外孕手术有没有假期",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:289828",
+        "t2:430205",
+        "t2:122751"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 15.7,
+        "total_ms": 15.7
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:289828",
+        "t2:430205",
+        "t2:122751"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 16.6,
+        "rerank_ms": 422.1,
+        "total_ms": 438.7
+      }
+    }
+  },
+  {
+    "question": "441特效药价格",
+    "baseline": {
+      "recall_at_k": 0,
+      "precision_at_k": 0.0,
+      "rr": 0.0,
+      "returned_chunk_ids": [
+        "t2:15791",
+        "t2:393752",
+        "t2:251369"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 12.8,
+        "total_ms": 12.8
+      }
+    },
+    "reranked": {
+      "recall_at_k": 0,
+      "precision_at_k": 0.0,
+      "rr": 0.0,
+      "returned_chunk_ids": [
+        "t2:15791",
+        "t2:571478",
+        "t2:393752"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 11.5,
+        "rerank_ms": 1210.8,
+        "total_ms": 1222.3
+      }
+    }
+  },
+  {
+    "question": "种阳光玫瑰有哪些工序",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:455811",
+        "t2:273868",
+        "t2:760348"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 21.4,
+        "total_ms": 21.4
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:644255",
+        "t2:356998",
+        "t2:428288"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 16.7,
+        "rerank_ms": 2222.7,
+        "total_ms": 2239.4
+      }
+    }
+  },
+  {
+    "question": "相亲第一天就睡了",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:15685",
+        "t2:656495",
+        "t2:588710"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 14.4,
+        "total_ms": 14.4
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:15685",
+        "t2:588710",
+        "t2:329544"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 13.0,
+        "rerank_ms": 642.2,
+        "total_ms": 655.2
+      }
+    }
+  },
+  {
+    "question": "中国有几个叫杨满的",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 0.5,
+      "returned_chunk_ids": [
+        "t2:484943",
+        "t2:447541",
+        "t2:143782"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 15.9,
+        "total_ms": 15.9
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.3333333333333333,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:447541",
+        "t2:484943",
+        "t2:500368"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 14.9,
+        "rerank_ms": 904.9,
+        "total_ms": 919.8
+      }
+    }
+  },
+  {
+    "question": "验孕棒第二天出现了很浅的第二道",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:384088",
+        "t2:261945",
+        "t2:572646"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 18.6,
+        "total_ms": 18.6
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:384088",
+        "t2:610140",
+        "t2:572646"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 18.8,
+        "rerank_ms": 167.3,
+        "total_ms": 186.1
+      }
+    }
+  },
+  {
+    "question": "医院查怀孕怎么查",
+    "baseline": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:93998",
+        "t2:15688",
+        "t2:146971"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 13.3,
+        "total_ms": 13.3
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 1.0,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:93998",
+        "t2:339594",
+        "t2:15688"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 11.7,
+        "rerank_ms": 85.2,
+        "total_ms": 96.9
+      }
+    }
+  },
+  {
+    "question": "毛主席记念堂不是节日用予约吗",
+    "baseline": {
+      "recall_at_k": 0,
+      "precision_at_k": 0.0,
+      "rr": 0.0,
+      "returned_chunk_ids": [
+        "t2:673483",
+        "t2:734520",
+        "t2:670677"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "search_ms": 16.5,
+        "total_ms": 16.5
+      }
+    },
+    "reranked": {
+      "recall_at_k": 1,
+      "precision_at_k": 0.6666666666666666,
+      "rr": 1.0,
+      "returned_chunk_ids": [
+        "t2:422122",
+        "t2:140528",
+        "t2:673483"
+      ],
+      "is_negative": false,
+      "returned_count": 3,
+      "timings": {
+        "retrieval_ms": 21.6,
+        "rerank_ms": 429.6,
+        "total_ms": 451.2
+      }
+    }
+  }
+]

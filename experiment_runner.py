@@ -25,6 +25,10 @@ def cmd_run(args: argparse.Namespace) -> None:
         dataset_path=args.dataset,
         top_k=args.top_k,
         threshold=args.threshold,
+        collection_name=args.collection,
+        limit=args.limit,
+        rerank_batch_size=args.rerank_batch_size,
+        predict_batch_size=args.predict_batch_size,
     )
     experiment_id = args.name or make_experiment_id()
     target = save_experiment(
@@ -52,6 +56,10 @@ def main() -> None:
     run_parser.add_argument("--dataset", default="evaluation_dataset.json")
     run_parser.add_argument("--top-k", type=int, default=3)
     run_parser.add_argument("--threshold", type=float, default=0.0)
+    run_parser.add_argument("--collection", default="kb_docs")
+    run_parser.add_argument("--limit", type=int, default=None)
+    run_parser.add_argument("--rerank-batch-size", type=int, default=16)
+    run_parser.add_argument("--predict-batch-size", type=int, default=4)
     run_parser.add_argument(
         "--output-dir",
         default="experiment_results",

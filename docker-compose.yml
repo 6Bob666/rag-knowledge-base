@@ -33,7 +33,7 @@ services:
       - ./chroma_data:/app/chroma_data
       - ./uploads:/app/uploads
       - ./logs:/app/logs
-      - ./knowledge_base.db:/app/data/knowledge_base.db
+      - rag_data:/app/data
     healthcheck:
       test:
         - CMD
@@ -49,3 +49,4 @@ services:
 
 volumes:
   redis_data:
+  rag_data:
