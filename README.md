@@ -7,6 +7,9 @@
 
 一个基于 FastAPI 的中文知识库问答系统，支持文档上传、自动切分、向量化入库、混合检索、重排序、LLM 生成回答，并配套完整的离线评测体系。
 
+配套文档：[项目技术串讲](PROJECT_WALKTHROUGH.md) ｜
+[面试手册（项目介绍、高频追问、简历描述）](INTERVIEW_GUIDE.md)
+
 ## 核心能力
 
 - 检索链路：BGE Embedding + BM25 混合召回、RRF 融合、BGE Reranker 精排与低分拒答。
